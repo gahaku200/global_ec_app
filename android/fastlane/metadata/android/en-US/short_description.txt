@@ -1,0 +1,1 @@
+This app is an app that allows you to purchase Japanese products.

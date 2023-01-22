@@ -1,0 +1,59 @@
+name: deliver
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '12.x'
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Run flutter version
+        run: flutter --version
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1.2'
+
+      - name: Install Fastlane
+        run: cd android && bundle install && cd ..
+
+      - name: Run flutter pub get
+        run: flutter pub get
+
+      - name: Get Version Number
+        run: |
+          echo "RELEASE_NAME=$(flutter pub run cider version | sed -E 's/([0-9.]+)\+([0-9]+)/\2(\1)/g')" >> $GITHUB_ENV
+
+      - name: Build app bundle
+        id: build
+        run: flutter build appbundle
+
+      - name: Get Package name
+        run: |
+          echo "PACKAGE_NAME=$(sed -nE 's/.*package="(.*)".*/\1/p' android/app/src/main/AndroidManifest.xml)" >> $GITHUB_ENV
+
+      - name: Execute Fastlane command
+        run: cd android && fastlane beta
