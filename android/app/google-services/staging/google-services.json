@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "189483100516",
+    "project_id": "japanese-market-stg",
+    "storage_bucket": "japanese-market-stg.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189483100516:android:783846548c3a23880b7271",
+        "android_client_info": {
+          "package_name": "com.soso.japaneseMarket.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189483100516-ncuerglg5iaiks6nfrekid0uhuo916h3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9fb6xO7eKgtS-iPVAxFkpl-KB1YoDM7M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "189483100516-ncuerglg5iaiks6nfrekid0uhuo916h3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "189483100516-ml0ijq768vfh3kos3i0576uh90olkc9a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.globalEcApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
