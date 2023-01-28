@@ -38,7 +38,13 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # バージョン自動採番
   cider: ^0.1.3
+
+  # flavor対応
+  flutter_flavor: ^3.1.1
+  flutter_flavorizr: ^2.1.5
+  firebase_core: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -92,3 +98,44 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flavorizr:
+  flavors:
+    dev:
+      app:
+        name: "Japanese Market(dev)"
+
+      android:
+        applicationId: "com.soso.japaneseMarket.dev"
+        firebase:
+          config: "./android/app/google-services/development/google-services.json"
+      ios:
+        bundleId: "com.soso.japaneseMarket.dev"
+        firebase:
+          config: "./ios/Runner/GoogleServicer-info/development/GoogleService-Info.plist"
+
+    stg:
+      app:
+        name: "Japanese Market(stg)"
+
+      android:
+        applicationId: "com.soso.japaneseMarket.stg"
+        firebase:
+          config: "./android/app/google-services/staging/google-services.json"
+      ios:
+        bundleId: "com.soso.japaneseMarket.stg"
+        firebase:
+          config: "./ios/Runner/GoogleServicer-info/staging/GoogleService-Info.plist"
+
+    prod:
+      app:
+        name: "Japanese Market"
+
+      android:
+        applicationId: "com.soso.japaneseMarket"
+        firebase:
+          config: "./android/app/google-services/production/google-services.json"
+      ios:
+        bundleId: "com.soso.japaneseMarket"
+        firebase:
+          config: "./ios/Runner/GoogleServicer-info/production/GoogleService-Info.plist"
