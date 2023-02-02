@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.1.0+13
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -33,7 +33,6 @@ dependencies:
     sdk: flutter
   import_sorter: ^4.6.0
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -44,7 +43,10 @@ dependencies:
   # flavor対応
   flutter_flavor: ^3.1.1
   flutter_flavorizr: ^2.1.5
+
+  # firebase関連
   firebase_core: ^2.4.1
+  cloud_firestore: ^4.3.1
 
 dev_dependencies:
   flutter_test:
@@ -55,7 +57,8 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
+  pedantic_mono: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

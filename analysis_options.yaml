@@ -1,29 +1,44 @@
-# This file configures the analyzer, which statically analyzes Dart code to
-# check for errors, warnings, and lints.
-#
-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
-# invoked from the command line by running `flutter analyze`.
+include: package:pedantic_mono/analysis_options.yaml
 
-# The following line activates a set of recommended lints for Flutter apps,
-# packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
+analyzer:
+  exclude:
+    # ferry graphql
+    - "**/*.g.dart"
+    - "**/*.ast.gql.dart"
+    - "**/*.gql.dart" # IDEでauto_importを利用したい場合は外す
+    # freezed 
+    - "**/*.freezed.dart"
+    # https://www.fluttericon.com/ から生成したファイル
+    - "**/app_icons.dart" # IDEでauto_importを利用したい場合は外す
+  
+  strong-mode:
+    # 暗黙的な型変換を禁止する
+    implicit-casts: false
 
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at
-  # https://dart-lang.github.io/linter/lints/index.html.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
-
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+    sort_pub_dependencies: false # pubを種類ごとに配置しているため
+    avoid_classes_with_only_static_members: false # classを名前空間として使いたいため
+    use_build_context_synchronously: false # 一旦見送り cf. https://twitter.com/_mono/status/1390556226853904384
+    lines_longer_than_80_chars: false # 80は無理 120で設定する方法がなかったのでfalseにした
+    use_key_in_widget_constructors: false # key渡すのMustじゃないと思うのでfalse
+    always_put_control_body_on_new_line: false # 短く書きたいので
+    flutter_style_todos: false # 謎のTODOのスタイル不要
+    no_default_cases: false # switch文のdefault記述要
+    directives_ordering: false # formatterを実行した後に順序が変わるので不要
+    prefer_const_constructors: true
+    empty_statements: true
+    no_duplicate_case_values: true
+    annotate_overrides: true
+    avoid_returning_null_for_void: true
+    avoid_single_cascade_in_expression_statements: true
+    prefer_conditional_assignment: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_for_elements_to_map_fromIterable: true
+    prefer_if_null_operators: true
+    prefer_null_aware_operators: true
+    prefer_single_quotes: true
+    unnecessary_null_in_if_null_operators: true
+    prefer_relative_imports: true
+    avoid_relative_lib_imports: true
