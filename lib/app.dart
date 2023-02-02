@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
 import 'flavors.dart';
 import 'pages/my_home_page.dart';
 
@@ -16,7 +17,6 @@ class App extends StatelessWidget {
       ),
       home: _flavorBanner(
         child: const MyHomePage(),
-        show: kDebugMode,
       ),
     );
   }
@@ -31,9 +31,10 @@ class App extends StatelessWidget {
               message: F.name,
               color: Colors.green.withOpacity(0.6),
               textStyle: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.0,
-                  letterSpacing: 1.0),
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+                letterSpacing: 1,
+              ),
               textDirection: TextDirection.ltr,
               child: child,
             )

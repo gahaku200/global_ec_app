@@ -1,3 +1,7 @@
 {
-  "java.configuration.updateBuildConfiguration": "automatic"
+  "dart.flutterSdkPath": "/Users/takaakiasada/development/flutter",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.formatOnPaste": true,
 }

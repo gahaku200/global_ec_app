@@ -1,41 +1,41 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-      {
-          "name": "debug-dev",
-          "request": "launch",
-          "type": "dart",
-          "program": "lib/main_dev.dart",
-          "args": [
-              "--debug",
-              "--flavor",
-              "dev",
-              "--dart-define=FLAVOR=dev",
-          ],
-      },
-      {
-          "name": "debug-stg",
-          "request": "launch",
-          "type": "dart",
-          "program": "lib/main_stg.dart",
-          "args": [
-              "--debug",
-              "--flavor",
-              "stg",
-              "--dart-define=FLAVOR=stg",
-          ],
-      },
-      {
-          "name": "debug-prod",
-          "request": "launch",
-          "type": "dart",
-          "program": "lib/main_prod.dart",
-          "args": [
-              "--debug",
-              "--flavor",
-              "prod",
-              "--dart-define=FLAVOR=prod",
-          ],
-      },
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "debug-dev",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_dev.dart",
+            "args": [
+                "--debug",
+                "--flavor",
+                "dev",
+                "--dart-define=FLAVOR=dev",
+            ],
+        },
+        {
+            "name": "debug-stg",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_stg.dart",
+            "args": [
+                "--debug",
+                "--flavor",
+                "stg",
+                "--dart-define=FLAVOR=stg",
+            ],
+        },
+        {
+            "name": "debug-prod",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_prod.dart",
+            "args": [
+                "--debug",
+                "--flavor",
+                "prod",
+                "--dart-define=FLAVOR=prod",
+            ],
+        },
+    ]
 }
