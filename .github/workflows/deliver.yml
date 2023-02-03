@@ -61,4 +61,5 @@ jobs:
           PACKAGE_NAME: ${{ var.PACKAGE_NAME }}
         run: |
           echo "JSON_KEY_FILE variable : ${{ var.JSON_KEY_FILE }}"
-        　　　　cd android && fastlane beta
+          echo "JSON_KEY_FILE variable2 : $JSON_KEY_FILE"
+          cd android && fastlane beta
