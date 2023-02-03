@@ -57,6 +57,8 @@ jobs:
 
       - name: Execute Fastlane command
         env:
-          JSON_KEY_FILE: ${{ variables.JSON_KEY_FILE }}
-          PACKAGE_NAME: ${{ variables.PACKAGE_NAME }}
-        run: cd android && fastlane beta
+          JSON_KEY_FILE: ${{ var.JSON_KEY_FILE }}
+          PACKAGE_NAME: ${{ var.PACKAGE_NAME }}
+        run: |
+          echo "JSON_KEY_FILE variable : ${{ var.JSON_KEY_FILE }}"
+        　　　　cd android && fastlane beta
