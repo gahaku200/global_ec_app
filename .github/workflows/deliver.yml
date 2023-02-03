@@ -56,4 +56,7 @@ jobs:
           echo "PACKAGE_NAME=$(sed -nE 's/.*package="(.*)".*/\1/p' android/app/src/main/AndroidManifest.xml)" >> $GITHUB_ENV
 
       - name: Execute Fastlane command
+        env:
+          JSON_KEY_FILE: ${{ vars.JSON_KEY_FILE }}
+          PACKAGE_NAME: ${{ vars.PACKAGE_NAME }}
         run: cd android && fastlane beta
