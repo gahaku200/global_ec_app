@@ -135,7 +135,7 @@ flavorizr:
         name: "Japanese Market"
 
       android:
-        applicationId: "com.soso.japaneseMarket"
+        applicationId: "com.global_ec_app"
         firebase:
           config: "./android/app/google-services/production/google-services.json"
       ios:
