@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import '../flavors.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends HookWidget {
   const MyHomePage({super.key});
 
   @override
@@ -31,11 +32,7 @@ class MyHomePage extends StatelessWidget {
             ),
             ElevatedButton(
               child: const Text('test'),
-              onPressed: () async {
-                // final snapShot =
-                //     await FirebaseFirestore.instance.collection('chats').get();
-                // final pos = snapShot.docs.first.data()['messages'];
-              },
+              onPressed: () async {},
             ),
           ],
         ),
