@@ -48,6 +48,9 @@ class GlobalMethods {
               onPressed: () {
                 // ignore: avoid_dynamic_calls
                 fct();
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
               },
               child: TextWidget(
                 color: Colors.red,

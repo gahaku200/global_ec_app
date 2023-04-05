@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import '../consts/consts.dart';
+import '../providers/products_provider.dart';
 import '../services/utils.dart';
 import '../widgets/feed_items.dart';
 import '../widgets/on_sale_widget.dart';
@@ -22,6 +23,10 @@ class HomeScreen extends HookConsumerWidget {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
     final size = utils.getScreenSize;
+    final allProducts = ref.watch(productsProvider);
+    final productsOnSale =
+        ref.read(productsProvider.notifier).getOnSaleProducts;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -90,10 +95,14 @@ class HomeScreen extends HookConsumerWidget {
                   child: SizedBox(
                     height: size.height * 0.24,
                     child: ListView.builder(
-                      itemCount: 10,
+                      itemCount: productsOnSale.length < 10
+                          ? productsOnSale.length
+                          : 10,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (ctx, index) {
-                        return const OnSaleWidget();
+                        return OnSaleWidget(
+                          productModel: productsOnSale[index],
+                        );
                       },
                     ),
                   ),
@@ -137,9 +146,9 @@ class HomeScreen extends HookConsumerWidget {
               // crossAxisSpacing: 10,
               childAspectRatio: size.width / (size.height * 0.59),
               children: List.generate(
-                4,
+                allProducts.length < 4 ? allProducts.length : 4,
                 (index) {
-                  return const FeedsWidget();
+                  return FeedsWidget(productModel: allProducts[index]);
                 },
               ),
             ),

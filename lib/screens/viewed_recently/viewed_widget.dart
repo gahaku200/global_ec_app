@@ -1,35 +1,52 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../models/viewed_model.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/products_provider.dart';
 import '../../services/utils.dart';
 import '../../widgets/text_widget.dart';
 
 class ViewedRecentlyWidget extends HookConsumerWidget {
-  const ViewedRecentlyWidget({super.key});
+  const ViewedRecentlyWidget({
+    super.key,
+    required this.viewedProdModel,
+  });
+
+  final ViewedProdModel viewedProdModel;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
     final size = utils.getScreenSize;
+    final currentProduct = ref
+        .read(productsProvider.notifier)
+        .findProdById(viewedProdModel.productId);
+    final usedPrice = currentProduct.isOnSale
+        ? currentProduct.salePrice
+        : currentProduct.price;
+    final carts = ref.watch(cartProvider);
+    final isInCart = carts.containsKey(currentProduct.id);
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: GestureDetector(
         onTap: () {
-          context.go('/ProductDetails');
+          context.go('/ProductDetails/${currentProduct.id}');
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FancyShimmerImage(
-              imageUrl: 'https://i.ibb.co/F0s3FHQ/Apricots.png',
+              imageUrl: currentProduct.imageUrl,
               height: size.width * 0.27,
               width: size.width * 0.25,
             ),
@@ -39,7 +56,7 @@ class ViewedRecentlyWidget extends HookConsumerWidget {
             Column(
               children: [
                 TextWidget(
-                  text: 'Title',
+                  text: currentProduct.title,
                   color: color,
                   textSize: 24,
                   maxLines: 2,
@@ -49,7 +66,7 @@ class ViewedRecentlyWidget extends HookConsumerWidget {
                   height: 12,
                 ),
                 TextWidget(
-                  text: '\$12.88',
+                  text: '\$${usedPrice.toStringAsFixed(2)}',
                   color: color,
                   textSize: 20,
                   maxLines: 1,
@@ -64,11 +81,18 @@ class ViewedRecentlyWidget extends HookConsumerWidget {
                 color: Colors.green,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () {},
-                  child: const Padding(
-                    padding: EdgeInsets.all(8),
+                  onTap: isInCart
+                      ? null
+                      : () {
+                          ref.read(cartProvider.notifier).addProductsToCart(
+                                productId: currentProduct.id,
+                                quantity: 1,
+                              );
+                        },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
                     child: Icon(
-                      CupertinoIcons.add,
+                      isInCart ? Icons.check : IconlyBold.plus,
                       color: Colors.white,
                       size: 20,
                     ),

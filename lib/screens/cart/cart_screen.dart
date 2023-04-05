@@ -6,6 +6,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../providers/cart_provider.dart';
 import '../../services/global_method.dart';
 import '../../services/utils.dart';
 import '../../widgets/empty_screen.dart';
@@ -19,21 +20,22 @@ class CartScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
-    const isEmpty = true;
-    return isEmpty
+    final carts = ref.watch(cartProvider);
+    final cartItemsList = carts.values.toList().reversed.toList();
+
+    return ref.watch(cartProvider).isEmpty
         ? const EmptyScreen(
             title: 'Your cart is empty',
             subtitle: 'Add something and make me happy :)',
             buttonText: 'Shop now',
             imagePath: 'assets/images/offers/Offer1.jpg',
           )
-        // ignore: dead_code
         : Scaffold(
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: TextWidget(
-                text: 'Cart (2)',
+                text: 'Cart (${carts.length})',
                 color: color,
                 textSize: 22,
                 isTitle: true,
@@ -44,7 +46,9 @@ class CartScreen extends HookConsumerWidget {
                     GlobalMethods.warningDialog(
                       title: 'Empty your cart?',
                       subtitle: 'Are you sure?',
-                      fct: () {},
+                      fct: () {
+                        ref.read(cartProvider.notifier).clearCart();
+                      },
                       context: context,
                     );
                   },
@@ -63,9 +67,12 @@ class CartScreen extends HookConsumerWidget {
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: 10,
+                    itemCount: cartItemsList.length,
                     itemBuilder: (ctx, index) {
-                      return const CartWidget();
+                      return CartWidget(
+                        cartModel: cartItemsList[index],
+                        q: cartItemsList[index].quantity,
+                      );
                     },
                   ),
                 ),

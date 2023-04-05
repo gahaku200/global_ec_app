@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../providers/products_provider.dart';
 import '../services/utils.dart';
 import '../widgets/back_widget.dart';
 import '../widgets/feed_items.dart';
@@ -21,6 +22,7 @@ class FeedsScreen extends HookConsumerWidget {
     final size = utils.getScreenSize;
     final searchTextController = useTextEditingController();
     final searchTextFocusNode = useFocusNode();
+    final allProducts = ref.watch(productsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -84,9 +86,9 @@ class FeedsScreen extends HookConsumerWidget {
               // crossAxisSpacing: 10,
               childAspectRatio: size.width / (size.height * 0.59),
               children: List.generate(
-                10,
+                allProducts.length,
                 (index) {
-                  return const FeedsWidget();
+                  return FeedsWidget(productModel: allProducts[index]);
                 },
               ),
             ),

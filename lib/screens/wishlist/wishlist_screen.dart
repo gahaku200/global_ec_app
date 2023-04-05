@@ -7,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../providers/wishlist_provider.dart';
 import '../../services/global_method.dart';
 import '../../services/utils.dart';
 import '../../widgets/back_widget.dart';
@@ -21,15 +22,16 @@ class WishlistScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
-    const isEmpty = true;
-    return isEmpty
+    final wishlist = ref.watch(wishlistProvider);
+    final wishlistItemsList = wishlist.values.toList().reversed.toList();
+
+    return wishlistItemsList.isEmpty
         ? const EmptyScreen(
             imagePath: 'assets/images/offers/Offer1.jpg',
             title: 'Your Wishlist is Empty',
             subtitle: 'Explore more and shortlist some items',
             buttonText: 'Add a wish',
           )
-        // ignore: dead_code
         : Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -38,7 +40,7 @@ class WishlistScreen extends HookConsumerWidget {
               elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: TextWidget(
-                text: 'Wishlist (2)',
+                text: 'Wishlist (${wishlistItemsList.length})',
                 color: color,
                 textSize: 22,
                 isTitle: true,
@@ -49,7 +51,9 @@ class WishlistScreen extends HookConsumerWidget {
                     GlobalMethods.warningDialog(
                       title: 'Empty your wishlist?',
                       subtitle: 'Are you sure?',
-                      fct: () {},
+                      fct: () {
+                        ref.read(wishlistProvider.notifier).clearWishlist();
+                      },
                       context: context,
                     );
                   },
@@ -61,11 +65,12 @@ class WishlistScreen extends HookConsumerWidget {
               ],
             ),
             body: MasonryGridView.count(
+              itemCount: wishlistItemsList.length,
               crossAxisCount: 2,
               // mainAxisSpacing: 16,
               // crossAxisSpacing: 20,
               itemBuilder: (context, index) {
-                return const WishlistWidget();
+                return WishlistWidget(wishlistModel: wishlistItemsList[index]);
               },
             ),
           );

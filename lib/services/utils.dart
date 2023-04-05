@@ -18,8 +18,3 @@ class Utils {
 
   Size get getScreenSize => MediaQuery.of(context).size;
 }
-
-// final getTheme = Provider((ref) {
-//   final isDark = ref.watch(themeState);
-//   return isDark ? Colors.white : Colors.black;
-// });

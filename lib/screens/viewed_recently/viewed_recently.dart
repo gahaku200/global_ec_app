@@ -6,6 +6,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../providers/viewed_provider.dart';
 import '../../services/global_method.dart';
 import '../../services/utils.dart';
 import '../../widgets/back_widget.dart';
@@ -20,16 +21,16 @@ class ViewedRecentlyScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
-    const isEmpty = true;
+    final viewedProd = ref.watch(viewedProdProvider);
+    final viewedProdItemsList = viewedProd.values.toList().reversed.toList();
 
-    if (isEmpty) {
+    if (viewedProdItemsList.isEmpty) {
       return const EmptyScreen(
         imagePath: 'assets/images/offers/Offer1.jpg',
         title: 'Your history is empty',
         subtitle: 'No products has been viewed yet!',
         buttonText: 'Shop now',
       );
-      // ignore: dead_code
     } else {
       return Scaffold(
         appBar: AppBar(
@@ -63,11 +64,13 @@ class ViewedRecentlyScreen extends HookConsumerWidget {
           ],
         ),
         body: ListView.builder(
-          itemCount: 10,
+          itemCount: viewedProdItemsList.length,
           itemBuilder: (ctx, index) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
-              child: ViewedRecentlyWidget(),
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+              child: ViewedRecentlyWidget(
+                viewedProdModel: viewedProdItemsList[index],
+              ),
             );
           },
         ),

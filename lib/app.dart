@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import 'consts/theme_data.dart';
 import 'flavors.dart';
+import 'inner_screens/cat_screen.dart';
 import 'inner_screens/feeds_screen.dart';
 import 'inner_screens/on_sale_screen.dart';
 import 'inner_screens/product.details.dart';
@@ -29,7 +30,7 @@ class App extends HookConsumerWidget {
       GoRoute(
         path: '/',
         builder: (BuildContext context, GoRouterState state) {
-          return LoginScreen();
+          return BottomBarScreen();
         },
         routes: <RouteBase>[
           GoRoute(
@@ -51,9 +52,10 @@ class App extends HookConsumerWidget {
             },
           ),
           GoRoute(
-            path: 'ProductDetails',
+            path: 'ProductDetails/:product_id',
             builder: (BuildContext context, GoRouterState state) {
-              return const ProductDetails();
+              final productId = state.params['product_id'];
+              return ProductDetails(productId: productId);
             },
           ),
           GoRoute(
@@ -90,6 +92,13 @@ class App extends HookConsumerWidget {
             path: 'ForgetPasswordScreen',
             builder: (BuildContext context, GoRouterState state) {
               return const ForgetPasswordScreen();
+            },
+          ),
+          GoRoute(
+            path: 'CategoryScreen/:catText',
+            builder: (BuildContext context, GoRouterState state) {
+              final catName = state.params['catText'];
+              return CategoryScreen(catName: catName);
             },
           ),
         ],

@@ -1,4 +1,7 @@
 // Flutter imports:
+// ignore_for_file: unnecessary_statements
+
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,12 +13,34 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../providers/cart_provider.dart';
+import '../providers/products_provider.dart';
+import '../providers/viewed_provider.dart';
+import '../providers/wishlist_provider.dart';
 import '../services/utils.dart';
 import '../widgets/heart_btn.dart';
 import '../widgets/text_widget.dart';
 
+class QuantityProvider extends StateNotifier<String> {
+  QuantityProvider() : super('1');
+
+  // ignore: use_setters_to_change_properties
+  void setText(String text) {
+    state = text;
+  }
+}
+
+final quantityProvider = StateNotifierProvider<QuantityProvider, String>(
+  (ref) => QuantityProvider(),
+);
+
 class ProductDetails extends HookConsumerWidget {
-  const ProductDetails({super.key});
+  const ProductDetails({
+    super.key,
+    required this.productId,
+  });
+
+  final String? productId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,14 +48,32 @@ class ProductDetails extends HookConsumerWidget {
     final color = ref.watch(utils.getTheme);
     final size = utils.getScreenSize;
     final quantityTextController = useTextEditingController(text: '1');
+    final quantity = ref.watch(quantityProvider);
+    final currentProduct =
+        ref.read(productsProvider.notifier).findProdById(productId!);
+    final usedPrice = currentProduct.isOnSale
+        ? currentProduct.salePrice
+        : currentProduct.price;
+    final totalPrice = usedPrice * int.parse(quantity);
+    final carts = ref.watch(cartProvider);
+    final isInCart = carts.containsKey(currentProduct.id);
+    final wishlist = ref.watch(wishlistProvider);
+    final isInWishlist = wishlist.containsKey(currentProduct.id);
 
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            // ignore: unnecessary_statements
-            Navigator.canPop(context) ? Navigator.pop(context) : null;
+            Navigator.canPop(context)
+                ? {
+                    ref.read(quantityProvider.notifier).setText('1'),
+                    ref
+                        .read(viewedProdProvider.notifier)
+                        .addProductToHistory(productId: currentProduct.id),
+                    Navigator.pop(context),
+                  }
+                : null;
           },
           child: Icon(
             IconlyLight.arrowLeft2,
@@ -46,7 +89,7 @@ class ProductDetails extends HookConsumerWidget {
           Flexible(
             flex: 2,
             child: FancyShimmerImage(
-              imageUrl: 'https://i.ibb.co/F0s3FHQ/Apricots.png',
+              imageUrl: currentProduct.imageUrl,
               boxFit: BoxFit.scaleDown,
               width: size.width,
             ),
@@ -72,13 +115,16 @@ class ProductDetails extends HookConsumerWidget {
                       children: [
                         Flexible(
                           child: TextWidget(
-                            text: 'title',
+                            text: currentProduct.title,
                             color: color,
                             textSize: 25,
                             isTitle: true,
                           ),
                         ),
-                        const HeartBTN(),
+                        HeartBTN(
+                          productId: currentProduct.id,
+                          isInWishlist: isInWishlist,
+                        ),
                       ],
                     ),
                   ),
@@ -88,13 +134,13 @@ class ProductDetails extends HookConsumerWidget {
                     child: Row(
                       children: [
                         TextWidget(
-                          text: '\$2.59',
+                          text: '\$${usedPrice.toStringAsFixed(2)}/',
                           color: Colors.green,
                           textSize: 22,
                           isTitle: true,
                         ),
                         TextWidget(
-                          text: '/kg',
+                          text: currentProduct.isPiece ? 'Piece' : 'kg',
                           color: color,
                           textSize: 12,
                         ),
@@ -102,8 +148,10 @@ class ProductDetails extends HookConsumerWidget {
                           width: 10,
                         ),
                         Visibility(
+                          // ignore: avoid_bool_literals_in_conditional_expressions
+                          visible: currentProduct.isOnSale ? true : false,
                           child: Text(
-                            '\$3.9',
+                            '\$${currentProduct.price.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 15,
                               color: color,
@@ -139,12 +187,12 @@ class ProductDetails extends HookConsumerWidget {
                     children: [
                       quantityController(
                         fct: () {
-                          if (quantityTextController.text == '1') {
+                          if (quantity == '1') {
                             return;
                           } else {
-                            quantityTextController.text =
-                                (int.parse(quantityTextController.text) - 1)
-                                    .toString();
+                            final result = (int.parse(quantity) - 1).toString();
+                            quantityTextController.text = result;
+                            ref.read(quantityProvider.notifier).setText(result);
                           }
                         },
                         icon: CupertinoIcons.minus,
@@ -165,7 +213,9 @@ class ProductDetails extends HookConsumerWidget {
                           cursorColor: Colors.green,
                           enabled: true,
                           inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp('[0-9]')),
+                            FilteringTextInputFormatter.allow(
+                              RegExp('[0-9]'),
+                            ),
                           ],
                           onChanged: (value) {
                             if (value.isEmpty) {
@@ -181,9 +231,9 @@ class ProductDetails extends HookConsumerWidget {
                       ),
                       quantityController(
                         fct: () {
-                          quantityTextController.text =
-                              (int.parse(quantityTextController.text) + 1)
-                                  .toString();
+                          final result = (int.parse(quantity) + 1).toString();
+                          quantityTextController.text = result;
+                          ref.read(quantityProvider.notifier).setText(result);
                         },
                         icon: CupertinoIcons.plus,
                         color: Colors.green,
@@ -224,13 +274,16 @@ class ProductDetails extends HookConsumerWidget {
                                 child: Row(
                                   children: [
                                     TextWidget(
-                                      text: '\$2.59/',
+                                      text:
+                                          '\$${totalPrice.toStringAsFixed(2)}/',
                                       color: color,
                                       textSize: 20,
                                       isTitle: true,
                                     ),
                                     TextWidget(
-                                      text: '${quantityTextController.text}kg',
+                                      text: currentProduct.isPiece
+                                          ? '${quantity}piece'
+                                          : '${quantity}kg',
                                       color: color,
                                       textSize: 16,
                                     ),
@@ -248,12 +301,23 @@ class ProductDetails extends HookConsumerWidget {
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(10),
                             child: InkWell(
-                              onTap: () {},
+                              onTap: isInCart
+                                  ? null
+                                  : () {
+                                      ref
+                                          .read(cartProvider.notifier)
+                                          .addProductsToCart(
+                                            productId: currentProduct.id,
+                                            quantity: int.parse(
+                                              quantityTextController.text,
+                                            ),
+                                          );
+                                    },
                               borderRadius: BorderRadius.circular(10),
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: TextWidget(
-                                  text: 'Add to cart',
+                                  text: isInCart ? 'In cart' : 'Add to cart',
                                   color: Colors.white,
                                   textSize: 18,
                                 ),

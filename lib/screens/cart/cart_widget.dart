@@ -6,25 +6,46 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../models/cart_model.dart';
+import '../../providers/cart_provider.dart';
+import '../../providers/products_provider.dart';
+import '../../providers/wishlist_provider.dart';
 import '../../services/utils.dart';
 import '../../widgets/heart_btn.dart';
 import '../../widgets/text_widget.dart';
 
 class CartWidget extends HookConsumerWidget {
-  const CartWidget({super.key});
+  const CartWidget({
+    super.key,
+    required this.cartModel,
+    required this.q,
+  });
+
+  final CartModel cartModel;
+  final int q;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
     final size = utils.getScreenSize;
-    final quantityTextController = useTextEditingController(text: '1');
+    final quantityTextController = useTextEditingController(text: q.toString());
+    final currentProduct =
+        ref.read(productsProvider.notifier).findProdById(cartModel.productId);
+    final usedPrice = currentProduct.isOnSale
+        ? currentProduct.salePrice
+        : currentProduct.price;
+    final wishlist = ref.watch(wishlistProvider);
+    final isInWishlist = wishlist.containsKey(currentProduct.id);
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        context.go('/ProductDetails/${cartModel.productId}');
+      },
       child: Row(
         children: [
           Expanded(
@@ -44,14 +65,14 @@ class CartWidget extends HookConsumerWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: FancyShimmerImage(
-                        imageUrl: 'https://i.ibb.co/F0s3FHQ/Apricots.png',
+                        imageUrl: currentProduct.imageUrl,
                       ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextWidget(
-                          text: 'Title',
+                          text: currentProduct.title,
                           color: color,
                           textSize: 20,
                           isTitle: true,
@@ -68,6 +89,11 @@ class CartWidget extends HookConsumerWidget {
                                   if (quantityTextController.text == '1') {
                                     return;
                                   } else {
+                                    ref
+                                        .read(cartProvider.notifier)
+                                        .reduceQuantityByOne(
+                                          cartModel.productId,
+                                        );
                                     quantityTextController.text = (int.parse(
                                               quantityTextController.text,
                                             ) -
@@ -101,6 +127,11 @@ class CartWidget extends HookConsumerWidget {
                               ),
                               _quantityController(
                                 fct: () {
+                                  ref
+                                      .read(cartProvider.notifier)
+                                      .increaseQuantityByOne(
+                                        cartModel.productId,
+                                      );
                                   quantityTextController.text =
                                       (int.parse(quantityTextController.text) +
                                               1)
@@ -120,7 +151,11 @@ class CartWidget extends HookConsumerWidget {
                       child: Column(
                         children: [
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              ref
+                                  .read(cartProvider.notifier)
+                                  .removeOneItem(cartModel.productId);
+                            },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,
                               color: Colors.red,
@@ -130,9 +165,12 @@ class CartWidget extends HookConsumerWidget {
                           const SizedBox(
                             height: 5,
                           ),
-                          const HeartBTN(),
+                          HeartBTN(
+                            productId: currentProduct.id,
+                            isInWishlist: isInWishlist,
+                          ),
                           TextWidget(
-                            text: '\$0.29',
+                            text: '\$${usedPrice.toStringAsFixed(2)}',
                             color: color,
                             textSize: 18,
                             maxLines: 1,
