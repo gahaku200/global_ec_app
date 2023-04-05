@@ -34,4 +34,4 @@ Runner/GeneratedPluginRegistrant.*
 !default.perspectivev3
 
 # GitGuardian has detected the following Google API Key exposed within your GitHub account.
-!Runner/GoogleService-Info.plist
+Runner/GoogleService-Info.plist
