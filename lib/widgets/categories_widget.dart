@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -26,7 +27,9 @@ class CategoriesWidget extends HookConsumerWidget {
     final color = isDark ? Colors.white : Colors.black;
 
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        context.go('/CategoryScreen/$catText');
+      },
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: passedColor.withOpacity(0.1),

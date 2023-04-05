@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../providers/products_provider.dart';
 import '../services/utils.dart';
 import '../widgets/back_widget.dart';
+import '../widgets/empty_products_widget.dart';
 import '../widgets/on_sale_widget.dart';
 import '../widgets/text_widget.dart';
 
@@ -15,7 +17,8 @@ class OnSaleScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const isEmpty = false;
+    final productsOnSale =
+        ref.read(productsProvider.notifier).getOnSaleProducts;
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
     final size = utils.getScreenSize;
@@ -31,29 +34,9 @@ class OnSaleScreen extends HookConsumerWidget {
           isTitle: true,
         ),
       ),
-      body: isEmpty
-          // ignore: dead_code
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.all(18),
-                    //   child: Image.asset(''),
-                    // ),
-                    Text(
-                      'No products on sale yet!,\nStay tuned',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      body: productsOnSale.isEmpty
+          ? const EmptyProdWidget(
+              text: 'No products on sale yet!,\nStay tuned',
             )
           : GridView.count(
               // shrinkWrap: true,
@@ -63,9 +46,9 @@ class OnSaleScreen extends HookConsumerWidget {
               // crossAxisSpacing: 10,
               childAspectRatio: size.width / (size.height * 0.45),
               children: List.generate(
-                16,
+                productsOnSale.length,
                 (index) {
-                  return const OnSaleWidget();
+                  return OnSaleWidget(productModel: productsOnSale[index]);
                 },
               ),
             ),

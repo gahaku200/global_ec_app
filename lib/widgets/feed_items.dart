@@ -9,13 +9,21 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../models/products_model.dart';
+import '../providers/cart_provider.dart';
+import '../providers/wishlist_provider.dart';
 import '../services/utils.dart';
 import 'heart_btn.dart';
 import 'price_widget.dart';
 import 'text_widget.dart';
 
 class FeedsWidget extends HookConsumerWidget {
-  const FeedsWidget({super.key});
+  const FeedsWidget({
+    super.key,
+    required this.productModel,
+  });
+
+  final ProductModel productModel;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,6 +31,10 @@ class FeedsWidget extends HookConsumerWidget {
     final color = ref.watch(utils.getTheme);
     final size = utils.getScreenSize;
     final quantityTextController = useTextEditingController(text: '1');
+    final carts = ref.watch(cartProvider);
+    final isInCart = carts.containsKey(productModel.id);
+    final wishlist = ref.watch(wishlistProvider);
+    final isInWishlist = wishlist.containsKey(productModel.id);
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -31,13 +43,13 @@ class FeedsWidget extends HookConsumerWidget {
         color: Theme.of(context).cardColor,
         child: InkWell(
           onTap: () {
-            context.go('/ProductDetails');
+            context.go('/ProductDetails/${productModel.id}');
           },
           borderRadius: BorderRadius.circular(12),
           child: Column(
             children: [
               FancyShimmerImage(
-                imageUrl: 'https://i.ibb.co/F0s3FHQ/Apricots.png',
+                imageUrl: productModel.imageUrl,
                 height: size.width * 0.21,
                 width: size.width * 0.2,
               ),
@@ -48,13 +60,22 @@ class FeedsWidget extends HookConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextWidget(
-                      text: 'Title',
-                      color: color,
-                      textSize: 20,
-                      isTitle: true,
+                    Flexible(
+                      flex: 3,
+                      child: TextWidget(
+                        text: productModel.title,
+                        color: color,
+                        maxLines: 1,
+                        textSize: 18,
+                        isTitle: true,
+                      ),
                     ),
-                    const HeartBTN(),
+                    Flexible(
+                      child: HeartBTN(
+                        productId: productModel.id,
+                        isInWishlist: isInWishlist,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -64,16 +85,13 @@ class FeedsWidget extends HookConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
-                      flex: 4,
+                      flex: 3,
                       child: PriceWidget(
-                        salePrice: 2.99,
-                        price: 5.9,
+                        salePrice: productModel.salePrice,
+                        price: productModel.price,
                         textPrice: quantityTextController.text,
-                        isOnSale: true,
+                        isOnSale: productModel.isOnSale,
                       ),
-                    ),
-                    const SizedBox(
-                      width: 3,
                     ),
                     Flexible(
                       child: Row(
@@ -82,9 +100,9 @@ class FeedsWidget extends HookConsumerWidget {
                             flex: 3,
                             child: FittedBox(
                               child: TextWidget(
-                                text: 'KG',
+                                text: productModel.isPiece ? 'Piece' : 'kg',
                                 color: color,
-                                textSize: 18,
+                                textSize: 20,
                                 isTitle: true,
                               ),
                             ),
@@ -123,7 +141,15 @@ class FeedsWidget extends HookConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: isInCart
+                      ? null
+                      : () {
+                          ref.read(cartProvider.notifier).addProductsToCart(
+                                productId: productModel.id,
+                                quantity:
+                                    int.parse(quantityTextController.text),
+                              );
+                        },
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all(Theme.of(context).cardColor),
@@ -138,7 +164,7 @@ class FeedsWidget extends HookConsumerWidget {
                     ),
                   ),
                   child: TextWidget(
-                    text: 'Add to cart',
+                    text: isInCart ? 'In cart' : 'Add to cart',
                     maxLines: 1,
                     color: color,
                     textSize: 20,

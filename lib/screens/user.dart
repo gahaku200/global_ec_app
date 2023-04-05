@@ -202,7 +202,10 @@ class UserScreen extends HookConsumerWidget {
       ),
       leading: Icon(icon),
       trailing: const Icon(IconlyLight.arrowRight2),
-      onTap: () {},
+      onTap: () {
+        // ignore: avoid_dynamic_calls
+        onPressed();
+      },
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import '../provider/btm_bar_provider.dart';
 import '../provider/dark_theme_provider.dart';
+import '../providers/cart_provider.dart';
 import '../widgets/text_widget.dart';
 import 'cart/cart_screen.dart';
 import 'categories.dart';
@@ -29,6 +30,8 @@ class BottomBarScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(btmBarState);
     final isDark = ref.watch(themeState);
+    final carts = ref.watch(cartProvider);
+
     return Scaffold(
       // appBar: AppBar(
       //   title: Text(_pages[selectedIndex]['title'] as String),
@@ -64,7 +67,7 @@ class BottomBarScreen extends HookConsumerWidget {
               onTap: () {},
               badgeContent: FittedBox(
                 child: TextWidget(
-                  text: '1',
+                  text: carts.length.toString(),
                   color: Colors.white,
                   textSize: 15,
                 ),
