@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -91,7 +92,7 @@ class App extends HookConsumerWidget {
           GoRoute(
             path: 'ForgetPasswordScreen',
             builder: (BuildContext context, GoRouterState state) {
-              return const ForgetPasswordScreen();
+              return ForgetPasswordScreen();
             },
           ),
           GoRoute(
@@ -101,22 +102,52 @@ class App extends HookConsumerWidget {
               return CategoryScreen(catName: catName);
             },
           ),
+          GoRoute(
+            path: 'LoginScreen',
+            builder: (BuildContext context, GoRouterState state) {
+              return LoginScreen();
+            },
+          ),
         ],
       ),
     ],
   );
 
+  final firebaseInitialization = Firebase.initializeApp();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(themeState);
-    return MaterialApp.router(
-      routeInformationProvider: _router.routeInformationProvider,
-      routeInformationParser: _router.routeInformationParser,
-      routerDelegate: _router.routerDelegate,
-      debugShowCheckedModeBanner: false,
-      title: F.title,
-      theme: Styles.themeData(value, context),
-      //home: BottomBarScreen(),
+    return FutureBuilder(
+      future: firebaseInitialization,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          const MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Text('An error occured'),
+              ),
+            ),
+          );
+        }
+        return MaterialApp.router(
+          routeInformationProvider: _router.routeInformationProvider,
+          routeInformationParser: _router.routeInformationParser,
+          routerDelegate: _router.routerDelegate,
+          debugShowCheckedModeBanner: false,
+          title: F.title,
+          theme: Styles.themeData(value, context),
+          //home: BottomBarScreen(),
+        );
+      },
     );
   }
 }

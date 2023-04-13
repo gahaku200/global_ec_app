@@ -6,7 +6,9 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../consts/firebase_consts.dart';
 import '../providers/wishlist_provider.dart';
+import '../services/global_method.dart';
 import '../services/utils.dart';
 
 class HeartBTN extends HookConsumerWidget {
@@ -26,6 +28,14 @@ class HeartBTN extends HookConsumerWidget {
 
     return GestureDetector(
       onTap: () {
+        final user = authInstance.currentUser;
+        if (user == null) {
+          GlobalMethods.errorDialog(
+            subtitle: 'No user found, Please login first',
+            context: context,
+          );
+          return;
+        }
         ref.read(wishlistProvider.notifier).addRemoveProductToWishlist(
               productId: productId,
             );

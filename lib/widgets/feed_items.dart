@@ -9,9 +9,11 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../consts/firebase_consts.dart';
 import '../models/products_model.dart';
 import '../providers/cart_provider.dart';
 import '../providers/wishlist_provider.dart';
+import '../services/global_method.dart';
 import '../services/utils.dart';
 import 'heart_btn.dart';
 import 'price_widget.dart';
@@ -144,6 +146,14 @@ class FeedsWidget extends HookConsumerWidget {
                   onPressed: isInCart
                       ? null
                       : () {
+                          final user = authInstance.currentUser;
+                          if (user == null) {
+                            GlobalMethods.errorDialog(
+                              subtitle: 'No user found, Please login first',
+                              context: context,
+                            );
+                            return;
+                          }
                           ref.read(cartProvider.notifier).addProductsToCart(
                                 productId: productModel.id,
                                 quantity:

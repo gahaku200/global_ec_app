@@ -23,7 +23,7 @@ class BottomBarScreen extends HookConsumerWidget {
     {'page': const HomeScreen(), 'title': 'Home Screen'},
     {'page': CategoriesScreen(), 'title': 'Categories Screen'},
     {'page': const CartScreen(), 'title': 'Cart Screen'},
-    {'page': const UserScreen(), 'title': 'User Screen'},
+    {'page': UserScreen(), 'title': 'User Screen'},
   ];
 
   @override
