@@ -8,9 +8,11 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../consts/firebase_consts.dart';
 import '../../models/viewed_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/products_provider.dart';
+import '../../services/global_method.dart';
 import '../../services/utils.dart';
 import '../../widgets/text_widget.dart';
 
@@ -84,6 +86,14 @@ class ViewedRecentlyWidget extends HookConsumerWidget {
                   onTap: isInCart
                       ? null
                       : () {
+                          final user = authInstance.currentUser;
+                          if (user == null) {
+                            GlobalMethods.errorDialog(
+                              subtitle: 'No user found, Please login first',
+                              context: context,
+                            );
+                            return;
+                          }
                           ref.read(cartProvider.notifier).addProductsToCart(
                                 productId: currentProduct.id,
                                 quantity: 1,
