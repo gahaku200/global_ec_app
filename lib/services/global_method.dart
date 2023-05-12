@@ -74,11 +74,12 @@ class GlobalMethods {
       builder: (context) {
         return AlertDialog(
           title: Row(
-            children: const [
-              SizedBox(
+            // ignore: prefer_const_literals_to_create_immutables
+            children: [
+              const SizedBox(
                 width: 8,
               ),
-              Text('An Error occured'),
+              const Text('An Error occured'),
             ],
           ),
           content: Text(subtitle),
