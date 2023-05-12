@@ -51,8 +51,13 @@ class WishlistScreen extends HookConsumerWidget {
                     GlobalMethods.warningDialog(
                       title: 'Empty your wishlist?',
                       subtitle: 'Are you sure?',
-                      fct: () {
-                        ref.read(wishlistProvider.notifier).clearWishlist();
+                      fct: () async {
+                        await ref
+                            .read(wishlistProvider.notifier)
+                            .clearOnlineWishlist();
+                        ref
+                            .read(wishlistProvider.notifier)
+                            .clearLocalWishlist();
                       },
                       context: context,
                     );

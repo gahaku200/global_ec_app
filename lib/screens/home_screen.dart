@@ -144,7 +144,7 @@ class HomeScreen extends HookConsumerWidget {
               crossAxisCount: 2,
               padding: EdgeInsets.zero,
               // crossAxisSpacing: 10,
-              childAspectRatio: size.width / (size.height * 0.59),
+              childAspectRatio: size.width / (size.height * 0.61),
               children: List.generate(
                 allProducts.length < 4 ? allProducts.length : 4,
                 (index) {

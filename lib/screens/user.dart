@@ -11,7 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import '../consts/firebase_consts.dart';
-import '../provider/dark_theme_provider.dart';
+import '../providers/dark_theme_provider.dart';
 import '../services/global_method.dart';
 import '../widgets/text_widget.dart';
 import 'loading_manager.dart';

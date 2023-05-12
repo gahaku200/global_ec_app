@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'app.dart';
 import 'consts/loading.dart';
 import 'flavors.dart';
-import 'provider/dark_theme_provider.dart';
+import 'providers/dark_theme_provider.dart';
 
 void main() {
   FlavorConfig(

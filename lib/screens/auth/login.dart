@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import '../../consts/consts.dart';
 import '../../consts/firebase_consts.dart';
+import '../../fetch_screen.dart';
 import '../../services/global_method.dart';
 import '../../widgets/auth_button.dart';
 import '../../widgets/google_button.dart';
@@ -36,15 +37,16 @@ class LoginScreen extends HookConsumerWidget {
     Future<void> submitFormOnLogin() async {
       final isValid = _formKey.currentState!.validate();
       FocusScope.of(context).unfocus();
-      ref.read(isLoadingProvider.notifier).state = true;
       if (isValid) {
         _formKey.currentState!.save();
+        ref.read(isLoadingProvider.notifier).state = true;
         try {
           await authInstance.signInWithEmailAndPassword(
             email: emailTextController.text.toLowerCase().trim(),
             password: passTextController.text.trim(),
           );
-          context.go('/');
+          ref.read(isFirstProvider.notifier).state = true;
+          context.go('/FetchScreen');
         } on FirebaseException catch (error) {
           await GlobalMethods.errorDialog(
             subtitle: '${error.message}',
@@ -262,7 +264,8 @@ class LoginScreen extends HookConsumerWidget {
                     ),
                     AuthButton(
                       fct: () {
-                        context.go('/');
+                        ref.read(isFirstProvider.notifier).state = true;
+                        context.go('/FetchScreen');
                       },
                       buttonText: 'Continue as a guest',
                       primary: Colors.black,

@@ -8,12 +8,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'consts/theme_data.dart';
+import 'fetch_screen.dart';
 import 'flavors.dart';
 import 'inner_screens/cat_screen.dart';
 import 'inner_screens/feeds_screen.dart';
 import 'inner_screens/on_sale_screen.dart';
 import 'inner_screens/product.details.dart';
-import 'provider/dark_theme_provider.dart';
+import 'providers/dark_theme_provider.dart';
 import 'screens/auth/forget_password.dart';
 import 'screens/auth/login.dart';
 import 'screens/auth/register.dart';
@@ -31,7 +32,7 @@ class App extends HookConsumerWidget {
       GoRoute(
         path: '/',
         builder: (BuildContext context, GoRouterState state) {
-          return BottomBarScreen();
+          return FetchScreen();
         },
         routes: <RouteBase>[
           GoRoute(
@@ -106,6 +107,12 @@ class App extends HookConsumerWidget {
             path: 'LoginScreen',
             builder: (BuildContext context, GoRouterState state) {
               return LoginScreen();
+            },
+          ),
+          GoRoute(
+            path: 'FetchScreen',
+            builder: (BuildContext context, GoRouterState state) {
+              return FetchScreen();
             },
           ),
         ],

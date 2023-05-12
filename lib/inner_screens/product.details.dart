@@ -10,13 +10,13 @@ import 'package:flutter/services.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import '../consts/firebase_consts.dart';
 import '../providers/cart_provider.dart';
 import '../providers/products_provider.dart';
-import '../providers/viewed_provider.dart';
 import '../providers/wishlist_provider.dart';
 import '../services/global_method.dart';
 import '../services/utils.dart';
@@ -70,12 +70,12 @@ class ProductDetails extends HookConsumerWidget {
             Navigator.canPop(context)
                 ? {
                     ref.read(quantityProvider.notifier).setText('1'),
-                    ref
-                        .read(viewedProdProvider.notifier)
-                        .addProductToHistory(productId: currentProduct.id),
-                    Navigator.pop(context),
+                    // ref
+                    //     .read(viewedProdProvider.notifier)
+                    //     .addProductToHistory(productId: currentProduct.id),
                   }
                 : null;
+            context.go('/BottomBarScreen');
           },
           child: Icon(
             IconlyLight.arrowLeft2,
@@ -184,64 +184,79 @@ class ProductDetails extends HookConsumerWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      quantityController(
-                        fct: () {
-                          if (quantity == '1') {
-                            return;
-                          } else {
-                            final result = (int.parse(quantity) - 1).toString();
-                            quantityTextController.text = result;
-                            ref.read(quantityProvider.notifier).setText(result);
-                          }
-                        },
-                        icon: CupertinoIcons.minus,
-                        color: Colors.red,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Flexible(
-                        child: TextField(
-                          controller: quantityTextController,
-                          key: const ValueKey('quantity'),
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
+                  isInCart
+                      ? Container(
+                          alignment: Alignment.center,
+                          child: TextWidget(
+                            text: 'This product is already in your cart!',
+                            color: color,
+                            textSize: 20,
                           ),
-                          textAlign: TextAlign.center,
-                          cursorColor: Colors.green,
-                          enabled: true,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp('[0-9]'),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            quantityController(
+                              fct: () {
+                                if (quantity == '1') {
+                                  return;
+                                } else {
+                                  final result =
+                                      (int.parse(quantity) - 1).toString();
+                                  quantityTextController.text = result;
+                                  ref
+                                      .read(quantityProvider.notifier)
+                                      .setText(result);
+                                }
+                              },
+                              icon: CupertinoIcons.minus,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Flexible(
+                              child: TextField(
+                                controller: quantityTextController,
+                                key: const ValueKey('quantity'),
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                ),
+                                textAlign: TextAlign.center,
+                                cursorColor: Colors.green,
+                                enabled: true,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp('[0-9]'),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  if (value.isEmpty) {
+                                    quantityTextController.text = '1';
+                                  } else {
+                                    return;
+                                  }
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            quantityController(
+                              fct: () {
+                                final result =
+                                    (int.parse(quantity) + 1).toString();
+                                quantityTextController.text = result;
+                                ref
+                                    .read(quantityProvider.notifier)
+                                    .setText(result);
+                              },
+                              icon: CupertinoIcons.plus,
+                              color: Colors.green,
                             ),
                           ],
-                          onChanged: (value) {
-                            if (value.isEmpty) {
-                              quantityTextController.text = '1';
-                            } else {
-                              return;
-                            }
-                          },
                         ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      quantityController(
-                        fct: () {
-                          final result = (int.parse(quantity) + 1).toString();
-                          quantityTextController.text = result;
-                          ref.read(quantityProvider.notifier).setText(result);
-                        },
-                        icon: CupertinoIcons.plus,
-                        color: Colors.green,
-                      ),
-                    ],
-                  ),
                   const Spacer(),
                   Container(
                     width: double.infinity,
@@ -315,14 +330,16 @@ class ProductDetails extends HookConsumerWidget {
                                         );
                                         return;
                                       }
+                                      GlobalMethods.addToCart(
+                                        productId: currentProduct.id,
+                                        quantity: int.parse(
+                                          quantityTextController.text,
+                                        ),
+                                        context: context,
+                                      );
                                       ref
                                           .read(cartProvider.notifier)
-                                          .addProductsToCart(
-                                            productId: currentProduct.id,
-                                            quantity: int.parse(
-                                              quantityTextController.text,
-                                            ),
-                                          );
+                                          .fetchCart();
                                     },
                               borderRadius: BorderRadius.circular(10),
                               child: Padding(

@@ -1,7 +1,12 @@
 // Package imports:
+// ignore_for_file: avoid_dynamic_calls
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../consts/firebase_consts.dart';
 import '../models/cart_model.dart';
 
 class CartNotifier extends StateNotifier<Map<String, CartModel>> {
@@ -11,18 +16,22 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
     return state;
   }
 
-  void addProductsToCart({
-    required String productId,
-    required int quantity,
-  }) {
-    state.putIfAbsent(
-      productId,
-      () => CartModel(
-        id: DateTime.now().toString(),
-        productId: productId,
-        quantity: quantity,
-      ),
-    );
+  final userCollection = FirebaseFirestore.instance.collection('users');
+  Future<void> fetchCart() async {
+    final user = authInstance.currentUser;
+    final DocumentSnapshot userDoc = await userCollection.doc(user!.uid).get();
+    final leng = int.parse(userDoc.get('userCart').length.toString());
+    for (var i = 0; i < leng; i++) {
+      state.putIfAbsent(
+        userDoc.get('userCart')[i]['productId'].toString(),
+        () => CartModel(
+          id: userDoc.get('userCart')[i]['cartId'].toString(),
+          productId: userDoc.get('userCart')[i]['productId'].toString(),
+          quantity:
+              int.parse(userDoc.get('userCart')[i]['quantity'].toString()),
+        ),
+      );
+    }
     changeState();
   }
 
@@ -50,12 +59,40 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
     changeState();
   }
 
-  void removeOneItem(String productId) {
+  Future<void> removeOneItem({
+    required String cartId,
+    required String productId,
+    required int quantity,
+  }) async {
+    final user = authInstance.currentUser;
+    final userDoc = await userCollection.doc(user!.uid).get();
+    final userCart = userDoc.data()!['userCart'];
+
+    // 削除対象のオブジェクトをフィルタリングする
+    userCart.removeWhere(
+      (dynamic cartItem) =>
+          cartItem['productId'] == productId && cartItem['cartId'] == cartId,
+    );
+
+    // 更新された配列をFirestoreに保存する
+    await userCollection.doc(user.uid).update({
+      'userCart': userCart,
+    });
+
     state.remove(productId);
+    await fetchCart();
     changeState();
   }
 
-  void clearCart() {
+  Future<void> clearOnlineCart() async {
+    final user = authInstance.currentUser;
+    await userCollection.doc(user!.uid).update({
+      'userCart': [],
+    });
+    state = {};
+  }
+
+  void clearLocalCart() {
     state = {};
   }
 

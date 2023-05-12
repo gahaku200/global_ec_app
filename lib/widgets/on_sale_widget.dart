@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../consts/firebase_consts.dart';
 import '../models/products_model.dart';
 import '../providers/cart_provider.dart';
+import '../providers/viewed_provider.dart';
 import '../providers/wishlist_provider.dart';
 import '../services/global_method.dart';
 import '../services/utils.dart';
@@ -44,6 +45,9 @@ class OnSaleWidget extends HookConsumerWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
+            ref
+                .read(viewedProdProvider.notifier)
+                .addProductToHistory(productId: productModel.id);
             context.go('/ProductDetails/${productModel.id}');
           },
           child: Padding(
@@ -86,12 +90,14 @@ class OnSaleWidget extends HookConsumerWidget {
                                         );
                                         return;
                                       }
+                                      GlobalMethods.addToCart(
+                                        productId: productModel.id,
+                                        quantity: 1,
+                                        context: context,
+                                      );
                                       ref
                                           .read(cartProvider.notifier)
-                                          .addProductsToCart(
-                                            productId: productModel.id,
-                                            quantity: 1,
-                                          );
+                                          .fetchCart();
                                     },
                               child: Icon(
                                 isInCart ? IconlyBold.bag2 : IconlyLight.bag2,

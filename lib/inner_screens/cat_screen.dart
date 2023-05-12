@@ -6,12 +6,15 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../models/products_model.dart';
 import '../providers/products_provider.dart';
 import '../services/utils.dart';
 import '../widgets/back_widget.dart';
 import '../widgets/empty_products_widget.dart';
 import '../widgets/feed_items.dart';
 import '../widgets/text_widget.dart';
+
+final listProdcutSearchProvider = StateProvider<List<ProductModel>>((_) => []);
 
 class CategoryScreen extends HookConsumerWidget {
   const CategoryScreen({
@@ -30,6 +33,7 @@ class CategoryScreen extends HookConsumerWidget {
     final searchTextFocusNode = useFocusNode();
     final productByCat =
         ref.read(productsProvider.notifier).findByCategory(catName!);
+    final listProdcutSearch = ref.watch(listProdcutSearchProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +42,7 @@ class CategoryScreen extends HookConsumerWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
         title: TextWidget(
-          text: 'All Products',
+          text: catName!,
           color: color,
           textSize: 20,
           isTitle: true,
@@ -58,7 +62,12 @@ class CategoryScreen extends HookConsumerWidget {
                       child: TextField(
                         focusNode: searchTextFocusNode,
                         controller: searchTextController,
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          ref.read(listProdcutSearchProvider.notifier).state =
+                              ref
+                                  .read(productsProvider.notifier)
+                                  .searchQuery(value);
+                        },
                         decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -90,20 +99,32 @@ class CategoryScreen extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    padding: EdgeInsets.zero,
-                    // crossAxisSpacing: 10,
-                    childAspectRatio: size.width / (size.height * 0.59),
-                    children: List.generate(
-                      productByCat.length,
-                      (index) {
-                        return FeedsWidget(productModel: productByCat[index]);
-                      },
-                    ),
-                  ),
+                  searchTextController.text.isNotEmpty &&
+                          listProdcutSearch.isEmpty
+                      ? const EmptyProdWidget(
+                          text: 'No products found, please try another keyword',
+                        )
+                      : GridView.count(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          crossAxisCount: 2,
+                          padding: EdgeInsets.zero,
+                          // crossAxisSpacing: 10,
+                          childAspectRatio: size.width / (size.height * 0.61),
+                          children: List.generate(
+                            searchTextController.text.isNotEmpty
+                                ? listProdcutSearch.length
+                                : productByCat.length,
+                            (index) {
+                              return FeedsWidget(
+                                productModel:
+                                    searchTextController.text.isNotEmpty
+                                        ? listProdcutSearch[index]
+                                        : productByCat[index],
+                              );
+                            },
+                          ),
+                        ),
                 ],
               ),
             ),

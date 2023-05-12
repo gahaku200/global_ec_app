@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import '../../consts/consts.dart';
 import '../../consts/firebase_consts.dart';
+import '../../fetch_screen.dart';
 import '../../services/global_method.dart';
 import '../../services/utils.dart';
 import '../../widgets/auth_button.dart';
@@ -53,6 +54,8 @@ class RegisterScreen extends HookConsumerWidget {
           );
           final user = authInstance.currentUser;
           final uid = user!.uid;
+          await user.updateDisplayName(fullNameController.text);
+          await user.reload();
           await FirebaseFirestore.instance.collection('users').doc(uid).set({
             'id': uid,
             'name': fullNameController.text,
@@ -64,7 +67,8 @@ class RegisterScreen extends HookConsumerWidget {
             'userCart': [],
             'createdAt': Timestamp.now(),
           });
-          context.go('/');
+          ref.read(isFirstProvider.notifier).state = true;
+          context.go('/FetchScreen');
         } on FirebaseException catch (error) {
           await GlobalMethods.errorDialog(
             subtitle: '${error.message}',

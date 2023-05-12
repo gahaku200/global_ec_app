@@ -12,8 +12,6 @@ analyzer:
     - "**/app_icons.dart" # IDEでauto_importを利用したい場合は外す
   
   strong-mode:
-    # 暗黙的な型変換を禁止する
-    implicit-casts: false
 
 linter:
   rules:
