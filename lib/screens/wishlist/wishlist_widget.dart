@@ -8,9 +8,12 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../consts/firebase_consts.dart';
 import '../../models/wishlist_model.dart';
+import '../../providers/cart_provider.dart';
 import '../../providers/products_provider.dart';
 import '../../providers/wishlist_provider.dart';
+import '../../services/global_method.dart';
 import '../../services/utils.dart';
 import '../../widgets/heart_btn.dart';
 import '../../widgets/text_widget.dart';
@@ -36,6 +39,8 @@ class WishlistWidget extends HookConsumerWidget {
         : currentProduct.price;
     final wishlist = ref.watch(wishlistProvider);
     final isInWishlist = wishlist.containsKey(currentProduct.id);
+    final carts = ref.watch(cartProvider);
+    final isInCart = carts.containsKey(currentProduct.id);
 
     return Padding(
       padding: const EdgeInsets.all(4),
@@ -72,10 +77,28 @@ class WishlistWidget extends HookConsumerWidget {
                       child: Row(
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: isInCart
+                                ? null
+                                : () {
+                                    final user = authInstance.currentUser;
+                                    if (user == null) {
+                                      GlobalMethods.errorDialog(
+                                        subtitle:
+                                            'No user found, Please login first',
+                                        context: context,
+                                      );
+                                      return;
+                                    }
+                                    GlobalMethods.addToCart(
+                                      productId: currentProduct.id,
+                                      quantity: 1,
+                                      context: context,
+                                    );
+                                    ref.read(cartProvider.notifier).fetchCart();
+                                  },
                             icon: Icon(
-                              IconlyLight.bag2,
-                              color: color,
+                              isInCart ? IconlyBold.bag2 : IconlyLight.bag2,
+                              color: isInCart ? Colors.green : color,
                             ),
                           ),
                           HeartBTN(

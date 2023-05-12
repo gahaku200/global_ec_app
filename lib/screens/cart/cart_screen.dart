@@ -2,11 +2,17 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 // Project imports:
+import '../../consts/firebase_consts.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/orders_provider.dart';
+import '../../providers/products_provider.dart';
 import '../../services/global_method.dart';
 import '../../services/utils.dart';
 import '../../widgets/empty_screen.dart';
@@ -32,6 +38,7 @@ class CartScreen extends HookConsumerWidget {
           )
         : Scaffold(
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: TextWidget(
@@ -46,8 +53,9 @@ class CartScreen extends HookConsumerWidget {
                     GlobalMethods.warningDialog(
                       title: 'Empty your cart?',
                       subtitle: 'Are you sure?',
-                      fct: () {
-                        ref.read(cartProvider.notifier).clearCart();
+                      fct: () async {
+                        await ref.read(cartProvider.notifier).clearOnlineCart();
+                        ref.read(cartProvider.notifier).clearLocalCart();
                       },
                       context: context,
                     );
@@ -64,6 +72,8 @@ class CartScreen extends HookConsumerWidget {
                 _checkout(
                   utils: utils,
                   color: color,
+                  ref: ref,
+                  ctx: context,
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -84,8 +94,21 @@ class CartScreen extends HookConsumerWidget {
   Widget _checkout({
     required Utils utils,
     required Color color,
+    required WidgetRef ref,
+    required BuildContext ctx,
   }) {
     final size = utils.getScreenSize;
+    final carts = ref.watch(cartProvider);
+
+    var total = 0.0;
+    carts.forEach((key, value) {
+      final getCurrProduct =
+          ref.read(productsProvider.notifier).findProdById(value.productId);
+      total += (getCurrProduct.isOnSale
+              ? getCurrProduct.salePrice
+              : getCurrProduct.price) *
+          value.quantity;
+    });
     return SizedBox(
       width: double.infinity,
       height: size.height * 0.1,
@@ -98,7 +121,50 @@ class CartScreen extends HookConsumerWidget {
               borderRadius: BorderRadius.circular(10),
               child: InkWell(
                 borderRadius: BorderRadius.circular(10),
-                onTap: () {},
+                onTap: () async {
+                  final user = authInstance.currentUser;
+                  final orderId = const Uuid().v4();
+
+                  carts.forEach((key, value) async {
+                    final getCurrProduct =
+                        ref.read(productsProvider.notifier).findProdById(
+                              value.productId,
+                            );
+                    try {
+                      await FirebaseFirestore.instance
+                          .collection('orders')
+                          .doc(orderId)
+                          .set({
+                        'orderId': orderId,
+                        'userId': user!.uid,
+                        'productId': value.productId,
+                        'price': (getCurrProduct.isOnSale
+                                ? getCurrProduct.salePrice
+                                : getCurrProduct.price) *
+                            value.quantity,
+                        'totalPrice': total,
+                        'quantity': value.quantity,
+                        'imageUrl': getCurrProduct.imageUrl,
+                        'userName': user.displayName,
+                        'orderDate': Timestamp.now(),
+                      });
+                      // ignore: avoid_catches_without_on_clauses
+                    } catch (error) {
+                      await GlobalMethods.errorDialog(
+                        subtitle: error.toString(),
+                        context: ctx,
+                      );
+                    } finally {}
+                  });
+                  await ref.read(cartProvider.notifier).clearOnlineCart();
+                  ref.read(cartProvider.notifier).clearLocalCart();
+                  await ref.read(ordersProvider.notifier).fetchOrders();
+                  await Fluttertoast.showToast(
+                    msg: 'Your order has been placed',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: TextWidget(
@@ -112,7 +178,7 @@ class CartScreen extends HookConsumerWidget {
             const Spacer(),
             FittedBox(
               child: TextWidget(
-                text: 'Total: \$0.259',
+                text: 'Total: \$${total.toStringAsFixed(2)}',
                 color: color,
                 textSize: 18,
                 isTitle: true,

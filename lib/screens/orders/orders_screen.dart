@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../providers/orders_provider.dart';
 import '../../services/utils.dart';
 import '../../widgets/back_widget.dart';
 import '../../widgets/empty_screen.dart';
@@ -18,8 +19,9 @@ class OrderScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
-    const isEmpty = true;
-    return isEmpty
+    final ordersList = ref.watch(ordersProvider);
+
+    return ordersList.isEmpty
         ? const EmptyScreen(
             imagePath: 'assets/images/offers/Offer1.jpg',
             title: 'You didnt place any order yet',
@@ -35,18 +37,19 @@ class OrderScreen extends HookConsumerWidget {
               backgroundColor:
                   Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
               title: TextWidget(
-                text: 'Your orders (2)',
+                text: 'Your orders (${ordersList.length})',
                 color: color,
                 textSize: 24,
                 isTitle: true,
               ),
             ),
             body: ListView.separated(
-              itemCount: 10,
+              itemCount: ordersList.length,
               itemBuilder: (ctx, index) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 2, vertical: 6),
-                  child: OrderWidget(),
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+                  child: OrderWidget(orderModel: ordersList[index]),
                 );
               },
               separatorBuilder: (BuildContext context, int index) {

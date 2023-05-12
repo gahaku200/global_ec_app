@@ -1,7 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
+
 // Project imports:
+import '../consts/firebase_consts.dart';
 import '../widgets/text_widget.dart';
 
 class GlobalMethods {
@@ -105,5 +111,61 @@ class GlobalMethods {
         );
       },
     );
+  }
+
+  static Future<void> addToCart({
+    required String productId,
+    required int quantity,
+    required BuildContext context,
+  }) async {
+    final user = authInstance.currentUser;
+    final uid = user!.uid;
+    final cartId = const Uuid().v4();
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'userCart': FieldValue.arrayUnion([
+          {
+            'cartId': cartId,
+            'productId': productId,
+            'quantity': quantity,
+          }
+        ])
+      });
+      await Fluttertoast.showToast(
+        msg: 'Item has been added to your cart',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+      // ignore: avoid_catches_without_on_clauses
+    } catch (error) {
+      await errorDialog(subtitle: error.toString(), context: context);
+    }
+  }
+
+  static Future<void> addToWishlist({
+    required String productId,
+    required BuildContext context,
+  }) async {
+    final user = authInstance.currentUser;
+    final uid = user!.uid;
+    final wishlistId = const Uuid().v4();
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'userWish': FieldValue.arrayUnion([
+          {
+            'wishlistId': wishlistId,
+            'productId': productId,
+          }
+        ])
+      });
+      await Fluttertoast.showToast(
+        msg: 'Item has been added to your wishlist',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+      // ignore: avoid_catches_without_on_clauses
+    } catch (error) {
+      await errorDialog(subtitle: error.toString(), context: context);
+    }
   }
 }

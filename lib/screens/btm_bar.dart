@@ -7,9 +7,9 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import '../provider/btm_bar_provider.dart';
-import '../provider/dark_theme_provider.dart';
+import '../providers/btm_bar_provider.dart';
 import '../providers/cart_provider.dart';
+import '../providers/dark_theme_provider.dart';
 import '../widgets/text_widget.dart';
 import 'cart/cart_screen.dart';
 import 'categories.dart';

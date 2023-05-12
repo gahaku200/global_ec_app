@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,39 +10,67 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import '../consts/firebase_consts.dart';
+import '../fetch_screen.dart';
 import '../services/global_method.dart';
 import 'text_widget.dart';
 
 class GoogleButton extends HookConsumerWidget {
   const GoogleButton({super.key});
 
-  Future<void> _googleSignIn(BuildContext context) async {
-    final googleSignIn = GoogleSignIn();
-    final googleAccount = await googleSignIn.signIn();
-    if (googleAccount != null) {
-      final googleAuth = await googleAccount.authentication;
-      if (googleAuth.accessToken != null && googleAuth.idToken != null) {
-        try {
-          await authInstance.signInWithCredential(
-            GoogleAuthProvider.credential(
-              idToken: googleAuth.idToken,
-              accessToken: googleAuth.accessToken,
-            ),
-          );
-          context.go('/');
-        } on FirebaseException catch (error) {
-          await GlobalMethods.errorDialog(
-            subtitle: '${error.message}',
-            context: context,
-          );
-          // ignore: avoid_catches_without_on_clauses
-        } catch (error) {
-          await GlobalMethods.errorDialog(
-            subtitle: '$error',
-            context: context,
-          );
-        } finally {}
+  Future<void> _googleSignIn(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    try {
+      final googleAccount = await GoogleSignIn().signIn();
+      if (googleAccount != null) {
+        final googleAuth = await googleAccount.authentication;
+        if (googleAuth.accessToken != null && googleAuth.idToken != null) {
+          try {
+            final authResult = await authInstance.signInWithCredential(
+              GoogleAuthProvider.credential(
+                idToken: googleAuth.idToken,
+                accessToken: googleAuth.accessToken,
+              ),
+            );
+            if (authResult.additionalUserInfo!.isNewUser) {
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(authResult.user!.uid)
+                  .set({
+                'id': authResult.user!.uid,
+                'name': authResult.user!.displayName,
+                'email': authResult.user!.email,
+                'shipping-address': '',
+                // ignore: inference_failure_on_collection_literal
+                'userWish': [],
+                // ignore: inference_failure_on_collection_literal
+                'userCart': [],
+                'createdAt': Timestamp.now(),
+              });
+            }
+            ref.read(isFirstProvider.notifier).state = true;
+            context.go('/FetchScreen');
+          } on FirebaseException catch (error) {
+            await GlobalMethods.errorDialog(
+              subtitle: '${error.message}',
+              context: context,
+            );
+            // ignore: avoid_catches_without_on_clauses
+          } catch (error) {
+            await GlobalMethods.errorDialog(
+              subtitle: '$error',
+              context: context,
+            );
+          } finally {}
+        }
       }
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      await GlobalMethods.errorDialog(
+        subtitle: '$e',
+        context: context,
+      );
     }
   }
 
@@ -51,7 +80,7 @@ class GoogleButton extends HookConsumerWidget {
       color: Colors.blue,
       child: InkWell(
         onTap: () {
-          _googleSignIn(context);
+          _googleSignIn(context, ref);
         },
         child: Row(
           children: [

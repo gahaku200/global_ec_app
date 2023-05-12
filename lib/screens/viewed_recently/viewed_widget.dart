@@ -94,10 +94,12 @@ class ViewedRecentlyWidget extends HookConsumerWidget {
                             );
                             return;
                           }
-                          ref.read(cartProvider.notifier).addProductsToCart(
-                                productId: currentProduct.id,
-                                quantity: 1,
-                              );
+                          GlobalMethods.addToCart(
+                            productId: currentProduct.id,
+                            quantity: 1,
+                            context: context,
+                          );
+                          ref.read(cartProvider.notifier).fetchCart();
                         },
                   child: Padding(
                     padding: const EdgeInsets.all(8),

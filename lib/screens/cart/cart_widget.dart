@@ -151,10 +151,14 @@ class CartWidget extends HookConsumerWidget {
                       child: Column(
                         children: [
                           InkWell(
-                            onTap: () {
-                              ref
+                            onTap: () async {
+                              await ref
                                   .read(cartProvider.notifier)
-                                  .removeOneItem(cartModel.productId);
+                                  .removeOneItem(
+                                    cartId: cartModel.id,
+                                    productId: cartModel.productId,
+                                    quantity: cartModel.quantity,
+                                  );
                             },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,
@@ -170,7 +174,8 @@ class CartWidget extends HookConsumerWidget {
                             isInWishlist: isInWishlist,
                           ),
                           TextWidget(
-                            text: '\$${usedPrice.toStringAsFixed(2)}',
+                            text:
+                                '\$${(usedPrice * int.parse(quantityTextController.text)).toStringAsFixed(2)}',
                             color: color,
                             textSize: 18,
                             maxLines: 1,

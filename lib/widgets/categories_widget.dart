@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import '../provider/dark_theme_provider.dart';
+import '../providers/dark_theme_provider.dart';
 import 'text_widget.dart';
 
 class CategoriesWidget extends HookConsumerWidget {

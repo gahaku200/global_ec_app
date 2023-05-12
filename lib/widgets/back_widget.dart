@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -18,7 +19,7 @@ class BackWidget extends HookConsumerWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () {
-        Navigator.pop(context);
+        context.go('/BottomBarScreen');
       },
       child: Icon(
         IconlyLight.arrowLeft2,
