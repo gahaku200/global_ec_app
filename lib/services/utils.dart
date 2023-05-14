@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import '../providers/dark_theme_provider.dart';
+import '../view_model/dark_theme_provider.dart';
 
 class Utils {
   Utils(this.context);

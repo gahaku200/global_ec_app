@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 
 // Project imports:
 import '../consts/firebase_consts.dart';
-import '../widgets/text_widget.dart';
+import '../view/widgets/text_widget.dart';
 
 class GlobalMethods {
   static Future<void> warningDialog({
