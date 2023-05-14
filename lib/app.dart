@@ -8,20 +8,20 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'consts/theme_data.dart';
-import 'fetch_screen.dart';
 import 'flavors.dart';
-import 'inner_screens/cat_screen.dart';
-import 'inner_screens/feeds_screen.dart';
-import 'inner_screens/on_sale_screen.dart';
-import 'inner_screens/product.details.dart';
-import 'providers/dark_theme_provider.dart';
-import 'screens/auth/forget_password.dart';
-import 'screens/auth/login.dart';
-import 'screens/auth/register.dart';
-import 'screens/btm_bar.dart';
-import 'screens/orders/orders_screen.dart';
-import 'screens/viewed_recently/viewed_recently.dart';
-import 'screens/wishlist/wishlist_screen.dart';
+import 'view/fetch_screen.dart';
+import 'view/inner_screens/cat_screen.dart';
+import 'view/inner_screens/feeds_screen.dart';
+import 'view/inner_screens/on_sale_screen.dart';
+import 'view/inner_screens/product.details.dart';
+import 'view/screens/auth/forget_password.dart';
+import 'view/screens/auth/login.dart';
+import 'view/screens/auth/register.dart';
+import 'view/screens/btm_bar.dart';
+import 'view/screens/orders/orders_screen.dart';
+import 'view/screens/viewed_recently/viewed_recently.dart';
+import 'view/screens/wishlist/wishlist_screen.dart';
+import 'view_model/dark_theme_provider.dart';
 
 class App extends HookConsumerWidget {
   App({super.key});
@@ -56,7 +56,7 @@ class App extends HookConsumerWidget {
           GoRoute(
             path: 'ProductDetails/:product_id',
             builder: (BuildContext context, GoRouterState state) {
-              final productId = state.params['product_id'];
+              final productId = state.pathParameters['product_id'];
               return ProductDetails(productId: productId);
             },
           ),
@@ -99,7 +99,7 @@ class App extends HookConsumerWidget {
           GoRoute(
             path: 'CategoryScreen/:catText',
             builder: (BuildContext context, GoRouterState state) {
-              final catName = state.params['catText'];
+              final catName = state.pathParameters['catText'];
               return CategoryScreen(catName: catName);
             },
           ),
