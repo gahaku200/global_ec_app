@@ -28,8 +28,9 @@ class CartScreen extends HookConsumerWidget {
     final color = ref.watch(utils.getTheme);
     final carts = ref.watch(cartProvider);
     final cartItemsList = carts.values.toList().reversed.toList();
+    final cartNotifier = ref.read(cartProvider.notifier);
 
-    return ref.watch(cartProvider).isEmpty
+    return carts.isEmpty
         ? const EmptyScreen(
             title: 'Your cart is empty',
             subtitle: 'Add something and make me happy :)',
@@ -54,8 +55,8 @@ class CartScreen extends HookConsumerWidget {
                       title: 'Empty your cart?',
                       subtitle: 'Are you sure?',
                       fct: () async {
-                        await ref.read(cartProvider.notifier).clearOnlineCart();
-                        ref.read(cartProvider.notifier).clearLocalCart();
+                        await cartNotifier.clearOnlineCart();
+                        cartNotifier.clearLocalCart();
                       },
                       context: context,
                     );
@@ -99,11 +100,12 @@ class CartScreen extends HookConsumerWidget {
   }) {
     final size = utils.getScreenSize;
     final carts = ref.watch(cartProvider);
+    final productsNotifier = ref.read(productsProvider.notifier);
+    final cartNotifier = ref.read(cartProvider.notifier);
 
     var total = 0.0;
     carts.forEach((key, value) {
-      final getCurrProduct =
-          ref.read(productsProvider.notifier).findProdById(value.productId);
+      final getCurrProduct = productsNotifier.findProdById(value.productId);
       total += (getCurrProduct.isOnSale
               ? getCurrProduct.salePrice
               : getCurrProduct.price) *
@@ -126,10 +128,9 @@ class CartScreen extends HookConsumerWidget {
                   final orderId = const Uuid().v4();
 
                   carts.forEach((key, value) async {
-                    final getCurrProduct =
-                        ref.read(productsProvider.notifier).findProdById(
-                              value.productId,
-                            );
+                    final getCurrProduct = productsNotifier.findProdById(
+                      value.productId,
+                    );
                     try {
                       await FirebaseFirestore.instance
                           .collection('orders')
@@ -156,8 +157,8 @@ class CartScreen extends HookConsumerWidget {
                       );
                     } finally {}
                   });
-                  await ref.read(cartProvider.notifier).clearOnlineCart();
-                  ref.read(cartProvider.notifier).clearLocalCart();
+                  await cartNotifier.clearOnlineCart();
+                  cartNotifier.clearLocalCart();
                   await ref.read(ordersProvider.notifier).fetchOrders();
                   await Fluttertoast.showToast(
                     msg: 'Your order has been placed',

@@ -62,9 +62,6 @@ class BottomBarScreen extends HookConsumerWidget {
           BottomNavigationBarItem(
             icon: badges.Badge(
               position: badges.BadgePosition.topEnd(top: -12, end: -9),
-              //showBadge: true,
-              //ignorePointer: false,
-              onTap: () {},
               badgeContent: FittedBox(
                 child: TextWidget(
                   text: carts.length.toString(),

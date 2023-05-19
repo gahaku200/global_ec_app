@@ -24,6 +24,7 @@ class WishlistScreen extends HookConsumerWidget {
     final color = ref.watch(utils.getTheme);
     final wishlist = ref.watch(wishlistProvider);
     final wishlistItemsList = wishlist.values.toList().reversed.toList();
+    final wishlistNotifier = ref.read(wishlistProvider.notifier);
 
     return wishlistItemsList.isEmpty
         ? const EmptyScreen(
@@ -52,12 +53,8 @@ class WishlistScreen extends HookConsumerWidget {
                       title: 'Empty your wishlist?',
                       subtitle: 'Are you sure?',
                       fct: () async {
-                        await ref
-                            .read(wishlistProvider.notifier)
-                            .clearOnlineWishlist();
-                        ref
-                            .read(wishlistProvider.notifier)
-                            .clearLocalWishlist();
+                        await wishlistNotifier.clearOnlineWishlist();
+                        wishlistNotifier.clearLocalWishlist();
                       },
                       context: context,
                     );
@@ -72,8 +69,6 @@ class WishlistScreen extends HookConsumerWidget {
             body: MasonryGridView.count(
               itemCount: wishlistItemsList.length,
               crossAxisCount: 2,
-              // mainAxisSpacing: 16,
-              // crossAxisSpacing: 20,
               itemBuilder: (context, index) {
                 return WishlistWidget(wishlistModel: wishlistItemsList[index]);
               },

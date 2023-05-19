@@ -12,10 +12,6 @@ import '../model/cart/cart_model.dart';
 class CartNotifier extends StateNotifier<Map<String, CartModel>> {
   CartNotifier() : super({});
 
-  Map<String, CartModel> get getCartItems {
-    return state;
-  }
-
   final userCollection = FirebaseFirestore.instance.collection('users');
   Future<void> fetchCart() async {
     final user = authInstance.currentUser;
@@ -23,16 +19,15 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
     final leng = int.parse(userDoc.get('userCart').length.toString());
     for (var i = 0; i < leng; i++) {
       state.putIfAbsent(
-        userDoc.get('userCart')[i]['productId'].toString(),
+        userDoc['userCart'][i]['productId'] as String,
         () => CartModel(
-          id: userDoc.get('userCart')[i]['cartId'].toString(),
-          productId: userDoc.get('userCart')[i]['productId'].toString(),
-          quantity:
-              int.parse(userDoc.get('userCart')[i]['quantity'].toString()),
+          id: userDoc['userCart'][i]['cartId'] as String,
+          productId: userDoc['userCart'][i]['productId'] as String,
+          quantity: userDoc['userCart'][i]['quantity'] as int,
         ),
       );
     }
-    changeState();
+    state = {...state};
   }
 
   void reduceQuantityByOne(String productId) {
@@ -44,7 +39,7 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
         quantity: value.quantity - 1,
       ),
     );
-    changeState();
+    state = {...state};
   }
 
   void increaseQuantityByOne(String productId) {
@@ -56,7 +51,7 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
         quantity: value.quantity + 1,
       ),
     );
-    changeState();
+    state = {...state};
   }
 
   Future<void> removeOneItem({
@@ -80,8 +75,7 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
     });
 
     state.remove(productId);
-    await fetchCart();
-    changeState();
+    state = {...state};
   }
 
   Future<void> clearOnlineCart() async {
@@ -94,12 +88,6 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
 
   void clearLocalCart() {
     state = {};
-  }
-
-  void changeState() {
-    final newState = state;
-    state = {};
-    state = newState;
   }
 }
 

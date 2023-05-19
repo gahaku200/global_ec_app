@@ -8,9 +8,6 @@ import '../model/order/order_model.dart';
 
 class OrdersNotifier extends StateNotifier<List<OrderModel>> {
   OrdersNotifier() : super([]);
-  List<OrderModel> get getOrders {
-    return state;
-  }
 
   void clearLocalOrders() {
     state = [];
@@ -28,14 +25,14 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
         state.insert(
           0,
           OrderModel(
-            orderId: element.get('orderId').toString(),
-            userId: element.get('userId').toString(),
-            productId: element.get('productId').toString(),
-            userName: element.get('userName').toString(),
-            price: element.get('price').toString(),
-            imageUrl: element.get('imageUrl').toString(),
-            quantity: element.get('quantity').toString(),
-            orderDate: element.get('orderDate').toString(),
+            orderId: element['orderId'] as String,
+            userId: element['userId'] as String,
+            productId: element['productId'] as String,
+            userName: element['userName'] as String,
+            price: element['price'] as double,
+            imageUrl: element['imageUrl'] as String,
+            quantity: element['quantity'] as int,
+            orderDate: (element['orderDate'] as Timestamp).toDate(),
           ),
         );
       }

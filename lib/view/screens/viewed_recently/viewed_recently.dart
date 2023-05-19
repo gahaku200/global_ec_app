@@ -52,7 +52,9 @@ class ViewedRecentlyScreen extends HookConsumerWidget {
                 GlobalMethods.warningDialog(
                   title: 'Empty your history?',
                   subtitle: 'Are you sure?',
-                  fct: () {},
+                  fct: () {
+                    ref.read(viewedProdProvider.notifier).clearHistory();
+                  },
                   context: context,
                 );
               },

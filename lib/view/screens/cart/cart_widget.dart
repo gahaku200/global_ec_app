@@ -41,6 +41,7 @@ class CartWidget extends HookConsumerWidget {
         : currentProduct.price;
     final wishlist = ref.watch(wishlistProvider);
     final isInWishlist = wishlist.containsKey(currentProduct.id);
+    final cartNotifier = ref.read(cartProvider.notifier);
 
     return GestureDetector(
       onTap: () {
@@ -89,11 +90,9 @@ class CartWidget extends HookConsumerWidget {
                                   if (quantityTextController.text == '1') {
                                     return;
                                   } else {
-                                    ref
-                                        .read(cartProvider.notifier)
-                                        .reduceQuantityByOne(
-                                          cartModel.productId,
-                                        );
+                                    cartNotifier.reduceQuantityByOne(
+                                      cartModel.productId,
+                                    );
                                     quantityTextController.text = (int.parse(
                                               quantityTextController.text,
                                             ) -
@@ -127,11 +126,9 @@ class CartWidget extends HookConsumerWidget {
                               ),
                               _quantityController(
                                 fct: () {
-                                  ref
-                                      .read(cartProvider.notifier)
-                                      .increaseQuantityByOne(
-                                        cartModel.productId,
-                                      );
+                                  cartNotifier.increaseQuantityByOne(
+                                    cartModel.productId,
+                                  );
                                   quantityTextController.text =
                                       (int.parse(quantityTextController.text) +
                                               1)
@@ -152,13 +149,11 @@ class CartWidget extends HookConsumerWidget {
                         children: [
                           InkWell(
                             onTap: () async {
-                              await ref
-                                  .read(cartProvider.notifier)
-                                  .removeOneItem(
-                                    cartId: cartModel.id,
-                                    productId: cartModel.productId,
-                                    quantity: cartModel.quantity,
-                                  );
+                              await cartNotifier.removeOneItem(
+                                cartId: cartModel.id,
+                                productId: cartModel.productId,
+                                quantity: cartModel.quantity,
+                              );
                             },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,

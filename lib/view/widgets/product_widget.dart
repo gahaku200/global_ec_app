@@ -20,8 +20,8 @@ import 'heart_btn.dart';
 import 'price_widget.dart';
 import 'text_widget.dart';
 
-class FeedsWidget extends HookConsumerWidget {
-  const FeedsWidget({
+class ProductWidget extends HookConsumerWidget {
+  const ProductWidget({
     super.key,
     required this.productModel,
   });

@@ -24,14 +24,14 @@ class WishlistNotifier extends StateNotifier<Map<String, WishlistModel>> {
     final leng = int.parse(userDoc.get('userWish').length.toString());
     for (var i = 0; i < leng; i++) {
       state.putIfAbsent(
-        userDoc.get('userWish')[i]['productId'].toString(),
+        userDoc['userWish'][i]['productId'] as String,
         () => WishlistModel(
-          id: userDoc.get('userWish')[i]['wishlistId'].toString(),
-          productId: userDoc.get('userWish')[i]['productId'].toString(),
+          id: userDoc['userWish'][i]['wishlistId'] as String,
+          productId: userDoc['userWish'][i]['productId'] as String,
         ),
       );
     }
-    changeState();
+    state = {...state};
   }
 
   Future<void> removeOneItem({
@@ -48,8 +48,6 @@ class WishlistNotifier extends StateNotifier<Map<String, WishlistModel>> {
       ])
     });
     state.remove(productId);
-    await fetchWishlist();
-    changeState();
   }
 
   Future<void> clearOnlineWishlist() async {
@@ -62,12 +60,6 @@ class WishlistNotifier extends StateNotifier<Map<String, WishlistModel>> {
 
   void clearLocalWishlist() {
     state = {};
-  }
-
-  void changeState() {
-    final newState = state;
-    state = {};
-    state = newState;
   }
 }
 

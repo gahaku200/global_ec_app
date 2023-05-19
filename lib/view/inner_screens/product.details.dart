@@ -23,18 +23,7 @@ import '../../view_model/wishlist_provider.dart';
 import '../widgets/heart_btn.dart';
 import '../widgets/text_widget.dart';
 
-class QuantityProvider extends StateNotifier<String> {
-  QuantityProvider() : super('1');
-
-  // ignore: use_setters_to_change_properties
-  void setText(String text) {
-    state = text;
-  }
-}
-
-final quantityProvider = StateNotifierProvider<QuantityProvider, String>(
-  (ref) => QuantityProvider(),
-);
+final quantityProvider = StateProvider((_) => 1);
 
 class ProductDetails extends HookConsumerWidget {
   const ProductDetails({
@@ -56,7 +45,7 @@ class ProductDetails extends HookConsumerWidget {
     final usedPrice = currentProduct.isOnSale
         ? currentProduct.salePrice
         : currentProduct.price;
-    final totalPrice = usedPrice * int.parse(quantity);
+    final totalPrice = usedPrice * quantity;
     final carts = ref.watch(cartProvider);
     final isInCart = carts.containsKey(currentProduct.id);
     final wishlist = ref.watch(wishlistProvider);
@@ -69,10 +58,7 @@ class ProductDetails extends HookConsumerWidget {
           onTap: () {
             Navigator.canPop(context)
                 ? {
-                    ref.read(quantityProvider.notifier).setText('1'),
-                    // ref
-                    //     .read(viewedProdProvider.notifier)
-                    //     .addProductToHistory(productId: currentProduct.id),
+                    ref.read(quantityProvider.notifier).state = 1,
                   }
                 : null;
             context.go('/BottomBarScreen');
@@ -198,15 +184,14 @@ class ProductDetails extends HookConsumerWidget {
                           children: [
                             quantityController(
                               fct: () {
-                                if (quantity == '1') {
+                                if (quantity == 1) {
                                   return;
                                 } else {
-                                  final result =
-                                      (int.parse(quantity) - 1).toString();
-                                  quantityTextController.text = result;
-                                  ref
-                                      .read(quantityProvider.notifier)
-                                      .setText(result);
+                                  final result = quantity - 1;
+                                  quantityTextController.text =
+                                      result.toString();
+                                  ref.read(quantityProvider.notifier).state =
+                                      result;
                                 }
                               },
                               icon: CupertinoIcons.minus,
@@ -245,12 +230,10 @@ class ProductDetails extends HookConsumerWidget {
                             ),
                             quantityController(
                               fct: () {
-                                final result =
-                                    (int.parse(quantity) + 1).toString();
-                                quantityTextController.text = result;
-                                ref
-                                    .read(quantityProvider.notifier)
-                                    .setText(result);
+                                final result = quantity + 1;
+                                quantityTextController.text = result.toString();
+                                ref.read(quantityProvider.notifier).state =
+                                    result;
                               },
                               icon: CupertinoIcons.plus,
                               color: Colors.green,

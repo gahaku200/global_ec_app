@@ -11,8 +11,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../consts/consts.dart';
 import '../../services/utils.dart';
 import '../../view_model/products_provider.dart';
-import '../widgets/feed_items.dart';
 import '../widgets/on_sale_widget.dart';
+import '../widgets/product_widget.dart';
 import '../widgets/text_widget.dart';
 
 class HomeScreen extends HookConsumerWidget {
@@ -126,7 +126,7 @@ class HomeScreen extends HookConsumerWidget {
                   // const Spacer(),
                   TextButton(
                     onPressed: () {
-                      context.go('/FeedsScreenState');
+                      context.go('/AllProductsScreen');
                     },
                     child: TextWidget(
                       text: 'Browse all',
@@ -148,7 +148,7 @@ class HomeScreen extends HookConsumerWidget {
               children: List.generate(
                 allProducts.length < 4 ? allProducts.length : 4,
                 (index) {
-                  return FeedsWidget(productModel: allProducts[index]);
+                  return ProductWidget(productModel: allProducts[index]);
                 },
               ),
             ),

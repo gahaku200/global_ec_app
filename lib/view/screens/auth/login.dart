@@ -33,38 +33,39 @@ class LoginScreen extends HookConsumerWidget {
     final passFocusNode = FocusNode();
     final isVisiable = ref.watch(_obscureText);
     final isLoading = ref.watch(isLoadingProvider);
+    final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
 
     Future<void> submitFormOnLogin() async {
       final isValid = _formKey.currentState!.validate();
       FocusScope.of(context).unfocus();
       if (isValid) {
         _formKey.currentState!.save();
-        ref.read(isLoadingProvider.notifier).state = true;
+        isLoadingNotifier.state = true;
         try {
           await authInstance.signInWithEmailAndPassword(
             email: emailTextController.text.toLowerCase().trim(),
             password: passTextController.text.trim(),
           );
-          ref.read(isFirstProvider.notifier).state = true;
+          isLoadingNotifier.state = true;
           context.go('/FetchScreen');
         } on FirebaseException catch (error) {
           await GlobalMethods.errorDialog(
             subtitle: '${error.message}',
             context: context,
           );
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
           // ignore: avoid_catches_without_on_clauses
         } catch (error) {
           await GlobalMethods.errorDialog(
             subtitle: '$error',
             context: context,
           );
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
         } finally {
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
         }
       } else {
-        ref.read(isLoadingProvider.notifier).state = false;
+        isLoadingNotifier.state = false;
       }
     }
 

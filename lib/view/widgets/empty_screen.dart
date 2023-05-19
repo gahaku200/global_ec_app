@@ -92,7 +92,7 @@ class EmptyScreen extends HookConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  context.go('/FeedsScreenState');
+                  context.go('/AllProductsScreen');
                 },
                 child: TextWidget(
                   text: buttonText,

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -14,6 +13,7 @@ import '../view_model/cart_provider.dart';
 import '../view_model/orders_provider.dart';
 import '../view_model/products_provider.dart';
 import '../view_model/wishlist_provider.dart';
+import 'screens/btm_bar.dart';
 
 final isFirstProvider = StateProvider((_) => true);
 
@@ -26,6 +26,11 @@ class FetchScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isFirst = ref.watch(isFirstProvider);
+    final isFirstNotifier = ref.read(isFirstProvider.notifier);
+    final productsNotifier = ref.read(productsProvider.notifier);
+    final cartNotifier = ref.read(cartProvider.notifier);
+    final wishlistNotifier = ref.read(wishlistProvider.notifier);
+    final ordersNotifier = ref.read(ordersProvider.notifier);
     useEffect(
       () {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -33,19 +38,18 @@ class FetchScreen extends HookConsumerWidget {
           Future.delayed(const Duration(microseconds: 5), () async {
             final user = authInstance.currentUser;
             if (user == null) {
-              await ref.read(productsProvider.notifier).fetchProducts();
-              ref.read(cartProvider.notifier).clearLocalCart();
-              ref.read(wishlistProvider.notifier).clearLocalWishlist();
-              ref.read(ordersProvider.notifier).clearLocalOrders();
+              await productsNotifier.fetchProducts();
+              cartNotifier.clearLocalCart();
+              wishlistNotifier.clearLocalWishlist();
+              ordersNotifier.clearLocalOrders();
             } else {
-              await ref.read(productsProvider.notifier).fetchProducts();
-              await ref.read(cartProvider.notifier).fetchCart();
-              await ref.read(wishlistProvider.notifier).fetchWishlist();
-              await ref.read(ordersProvider.notifier).fetchOrders();
+              await productsNotifier.fetchProducts();
+              await cartNotifier.fetchCart();
+              await wishlistNotifier.fetchWishlist();
+              await ordersNotifier.fetchOrders();
             }
             if (isFirst) {
-              ref.read(isFirstProvider.notifier).state = false;
-              context.go('/BottomBarScreen');
+              isFirstNotifier.state = false;
             }
           });
         });
@@ -53,24 +57,28 @@ class FetchScreen extends HookConsumerWidget {
       },
     );
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Image.asset(
-            images[0],
-            fit: BoxFit.cover,
-            height: double.infinity,
-          ),
-          Container(
-            color: Colors.black.withOpacity(0.7),
-          ),
-          const Center(
-            child: SpinKitFadingFour(
-              color: Colors.white,
+    if (isFirst) {
+      return Scaffold(
+        body: Stack(
+          children: [
+            Image.asset(
+              images[0],
+              fit: BoxFit.cover,
+              height: double.infinity,
             ),
-          )
-        ],
-      ),
-    );
+            Container(
+              color: Colors.black.withOpacity(0.7),
+            ),
+            const Center(
+              child: SpinKitFadingFour(
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+      );
+    } else {
+      return BottomBarScreen();
+    }
   }
 }
