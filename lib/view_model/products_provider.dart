@@ -22,21 +22,18 @@ class ProductsNotifier extends StateNotifier<List<ProductModel>> {
         array.insert(
           0,
           ProductModel(
-            id: element.get('id').toString(),
-            title: element.get('title').toString(),
-            imageUrl: element.get('imageUrl').toString(),
-            productCategoryName: element.get('productCategoryName').toString(),
-            price: double.parse(
-              element.get('price').toString(),
-            ),
-            salePrice: double.parse(element.get('salePrice').toString()),
-            isOnSale: element.get('isOnSale').toString() == 'true',
-            isPiece: element.get('isPiece').toString() == 'true',
+            id: element['id'] as String,
+            title: element['title'] as String,
+            imageUrl: element['imageUrl'] as String,
+            productCategoryName: element['productCategoryName'] as String,
+            price: element['price'] as double,
+            salePrice: element['salePrice'] as double,
+            isOnSale: element['isOnSale'] as bool,
+            isPiece: element['isPiece'] as bool,
           ),
         );
       }
     });
-    state = [];
     state = array;
   }
 

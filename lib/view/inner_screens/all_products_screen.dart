@@ -11,13 +11,13 @@ import '../../services/utils.dart';
 import '../../view_model/products_provider.dart';
 import '../widgets/back_widget.dart';
 import '../widgets/empty_products_widget.dart';
-import '../widgets/feed_items.dart';
+import '../widgets/product_widget.dart';
 import '../widgets/text_widget.dart';
 
 final listProdcutSearchProvider = StateProvider<List<ProductModel>>((_) => []);
 
-class FeedsScreen extends HookConsumerWidget {
-  const FeedsScreen({super.key});
+class AllProductsScreen extends HookConsumerWidget {
+  const AllProductsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,7 +71,7 @@ class FeedsScreen extends HookConsumerWidget {
                     ),
                     hintText: "What's in your mind",
                     prefixIcon: const Icon(Icons.search),
-                    suffix: IconButton(
+                    suffixIcon: IconButton(
                       onPressed: () {
                         searchTextController.clear();
                         searchTextFocusNode.unfocus();
@@ -102,7 +102,7 @@ class FeedsScreen extends HookConsumerWidget {
                           ? listProdcutSearch.length
                           : allProducts.length,
                       (index) {
-                        return FeedsWidget(
+                        return ProductWidget(
                           productModel: searchTextController.text.isNotEmpty
                               ? listProdcutSearch[index]
                               : allProducts[index],

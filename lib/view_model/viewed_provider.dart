@@ -7,10 +7,6 @@ import '../model/viewed/viewed_model.dart';
 class ViewedProdNotifier extends StateNotifier<Map<String, ViewedProdModel>> {
   ViewedProdNotifier() : super({});
 
-  Map<String, ViewedProdModel> get getWishlistItems {
-    return state;
-  }
-
   void addProductToHistory({required String productId}) {
     state.putIfAbsent(
       productId,
@@ -19,17 +15,10 @@ class ViewedProdNotifier extends StateNotifier<Map<String, ViewedProdModel>> {
         productId: productId,
       ),
     );
-    changeState();
   }
 
   void clearHistory() {
     state = {};
-  }
-
-  void changeState() {
-    final newState = state;
-    state = {};
-    state = newState;
   }
 }
 

@@ -11,10 +11,10 @@ class OrderModel with _$OrderModel {
     required String userId,
     required String productId,
     required String userName,
-    required String price,
+    required double price,
     required String imageUrl,
-    required String quantity,
-    required String orderDate,
+    required int quantity,
+    required DateTime orderDate,
   }) = _OrderModel;
 
   factory OrderModel.fromJson(Map<String, dynamic> json) =>

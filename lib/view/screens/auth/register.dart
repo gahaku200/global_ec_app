@@ -40,11 +40,12 @@ class RegisterScreen extends HookConsumerWidget {
     final addressFocusNode = FocusNode();
     final isVisiable = ref.watch(_obscureText);
     final isLoading = ref.watch(isLoadingProvider);
+    final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
 
     Future<void> submitFormOnRegister() async {
       final isValid = _formKey.currentState!.validate();
       FocusScope.of(context).unfocus();
-      ref.read(isLoadingProvider.notifier).state = true;
+      isLoadingNotifier.state = true;
       if (isValid) {
         _formKey.currentState!.save();
         try {
@@ -74,19 +75,19 @@ class RegisterScreen extends HookConsumerWidget {
             subtitle: '${error.message}',
             context: context,
           );
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
           // ignore: avoid_catches_without_on_clauses
         } catch (error) {
           await GlobalMethods.errorDialog(
             subtitle: '$error',
             context: context,
           );
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
         } finally {
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
         }
       } else {
-        ref.read(isLoadingProvider.notifier).state = false;
+        isLoadingNotifier.state = false;
       }
     }
 

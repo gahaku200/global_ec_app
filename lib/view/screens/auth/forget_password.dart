@@ -29,6 +29,7 @@ class ForgetPasswordScreen extends HookConsumerWidget {
     final size = utils.getScreenSize;
     final emailTextController = useTextEditingController();
     final isLoading = ref.watch(isLoadingProvider);
+    final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
 
     Future<void> forgetPassFCT() async {
       if (emailTextController.text.isEmpty ||
@@ -38,7 +39,7 @@ class ForgetPasswordScreen extends HookConsumerWidget {
           context: context,
         );
       } else {
-        ref.read(isLoadingProvider.notifier).state = true;
+        isLoadingNotifier.state = true;
         try {
           await authInstance.sendPasswordResetEmail(
             email: emailTextController.text.toLowerCase(),
@@ -57,16 +58,16 @@ class ForgetPasswordScreen extends HookConsumerWidget {
             subtitle: '${error.message}',
             context: context,
           );
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
           // ignore: avoid_catches_without_on_clauses
         } catch (error) {
           await GlobalMethods.errorDialog(
             subtitle: '$error',
             context: context,
           );
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
         } finally {
-          ref.read(isLoadingProvider.notifier).state = false;
+          isLoadingNotifier.state = false;
         }
       }
     }

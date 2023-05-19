@@ -10,8 +10,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'consts/theme_data.dart';
 import 'flavors.dart';
 import 'view/fetch_screen.dart';
+import 'view/inner_screens/all_products_screen.dart';
 import 'view/inner_screens/cat_screen.dart';
-import 'view/inner_screens/feeds_screen.dart';
 import 'view/inner_screens/on_sale_screen.dart';
 import 'view/inner_screens/product.details.dart';
 import 'view/screens/auth/forget_password.dart';
@@ -48,9 +48,9 @@ class App extends HookConsumerWidget {
             },
           ),
           GoRoute(
-            path: 'FeedsScreenState',
+            path: 'AllProductsScreen',
             builder: (BuildContext context, GoRouterState state) {
-              return const FeedsScreen();
+              return const AllProductsScreen();
             },
           ),
           GoRoute(
@@ -152,7 +152,6 @@ class App extends HookConsumerWidget {
           debugShowCheckedModeBanner: false,
           title: F.title,
           theme: Styles.themeData(value, context),
-          //home: BottomBarScreen(),
         );
       },
     );

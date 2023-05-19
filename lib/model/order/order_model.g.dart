@@ -12,10 +12,10 @@ _$_OrderModel _$$_OrderModelFromJson(Map<String, dynamic> json) =>
       userId: json['userId'] as String,
       productId: json['productId'] as String,
       userName: json['userName'] as String,
-      price: json['price'] as String,
+      price: (json['price'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,
-      quantity: json['quantity'] as String,
-      orderDate: json['orderDate'] as String,
+      quantity: json['quantity'] as int,
+      orderDate: DateTime.parse(json['orderDate'] as String),
     );
 
 Map<String, dynamic> _$$_OrderModelToJson(_$_OrderModel instance) =>
@@ -27,5 +27,5 @@ Map<String, dynamic> _$$_OrderModelToJson(_$_OrderModel instance) =>
       'price': instance.price,
       'imageUrl': instance.imageUrl,
       'quantity': instance.quantity,
-      'orderDate': instance.orderDate,
+      'orderDate': instance.orderDate.toIso8601String(),
     };

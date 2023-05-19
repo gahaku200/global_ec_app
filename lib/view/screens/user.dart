@@ -34,11 +34,12 @@ class UserScreen extends HookConsumerWidget {
     final email = ref.watch(emailProvider);
     final name = ref.watch(nameProvider);
     final address = ref.watch(addressProvider);
+    final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
 
     Future<void> getUserData() async {
-      ref.read(isLoadingProvider.notifier).state = true;
+      isLoadingNotifier.state = true;
       if (user == null) {
-        ref.read(isLoadingProvider.notifier).state = false;
+        isLoadingNotifier.state = false;
         return;
       }
       try {
@@ -52,10 +53,10 @@ class UserScreen extends HookConsumerWidget {
         addressTextController.text = userDoc.get('shipping-address') as String;
         // ignore: avoid_catches_without_on_clauses
       } catch (error) {
-        ref.read(isLoadingProvider.notifier).state = false;
+        isLoadingNotifier.state = false;
         await GlobalMethods.errorDialog(subtitle: '$error', context: context);
       } finally {
-        ref.read(isLoadingProvider.notifier).state = false;
+        isLoadingNotifier.state = false;
       }
     }
 

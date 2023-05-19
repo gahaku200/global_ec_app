@@ -11,7 +11,7 @@ import '../../services/utils.dart';
 import '../../view_model/products_provider.dart';
 import '../widgets/back_widget.dart';
 import '../widgets/empty_products_widget.dart';
-import '../widgets/feed_items.dart';
+import '../widgets/product_widget.dart';
 import '../widgets/text_widget.dart';
 
 final listProdcutSearchProvider = StateProvider<List<ProductModel>>((_) => []);
@@ -116,7 +116,7 @@ class CategoryScreen extends HookConsumerWidget {
                                 ? listProdcutSearch.length
                                 : productByCat.length,
                             (index) {
-                              return FeedsWidget(
+                              return ProductWidget(
                                 productModel:
                                     searchTextController.text.isNotEmpty
                                         ? listProdcutSearch[index]

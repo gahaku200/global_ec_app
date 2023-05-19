@@ -24,10 +24,10 @@ mixin _$OrderModel {
   String get userId => throw _privateConstructorUsedError;
   String get productId => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
-  String get price => throw _privateConstructorUsedError;
+  double get price => throw _privateConstructorUsedError;
   String get imageUrl => throw _privateConstructorUsedError;
-  String get quantity => throw _privateConstructorUsedError;
-  String get orderDate => throw _privateConstructorUsedError;
+  int get quantity => throw _privateConstructorUsedError;
+  DateTime get orderDate => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -46,10 +46,10 @@ abstract class $OrderModelCopyWith<$Res> {
       String userId,
       String productId,
       String userName,
-      String price,
+      double price,
       String imageUrl,
-      String quantity,
-      String orderDate});
+      int quantity,
+      DateTime orderDate});
 }
 
 /// @nodoc
@@ -94,7 +94,7 @@ class _$OrderModelCopyWithImpl<$Res, $Val extends OrderModel>
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       imageUrl: null == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -102,11 +102,11 @@ class _$OrderModelCopyWithImpl<$Res, $Val extends OrderModel>
       quantity: null == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       orderDate: null == orderDate
           ? _value.orderDate
           : orderDate // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
     ) as $Val);
   }
 }
@@ -124,10 +124,10 @@ abstract class _$$_OrderModelCopyWith<$Res>
       String userId,
       String productId,
       String userName,
-      String price,
+      double price,
       String imageUrl,
-      String quantity,
-      String orderDate});
+      int quantity,
+      DateTime orderDate});
 }
 
 /// @nodoc
@@ -170,7 +170,7 @@ class __$$_OrderModelCopyWithImpl<$Res>
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       imageUrl: null == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -178,11 +178,11 @@ class __$$_OrderModelCopyWithImpl<$Res>
       quantity: null == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       orderDate: null == orderDate
           ? _value.orderDate
           : orderDate // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
     ));
   }
 }
@@ -212,13 +212,13 @@ class _$_OrderModel implements _OrderModel {
   @override
   final String userName;
   @override
-  final String price;
+  final double price;
   @override
   final String imageUrl;
   @override
-  final String quantity;
+  final int quantity;
   @override
-  final String orderDate;
+  final DateTime orderDate;
 
   @override
   String toString() {
@@ -270,10 +270,10 @@ abstract class _OrderModel implements OrderModel {
       required final String userId,
       required final String productId,
       required final String userName,
-      required final String price,
+      required final double price,
       required final String imageUrl,
-      required final String quantity,
-      required final String orderDate}) = _$_OrderModel;
+      required final int quantity,
+      required final DateTime orderDate}) = _$_OrderModel;
 
   factory _OrderModel.fromJson(Map<String, dynamic> json) =
       _$_OrderModel.fromJson;
@@ -287,13 +287,13 @@ abstract class _OrderModel implements OrderModel {
   @override
   String get userName;
   @override
-  String get price;
+  double get price;
   @override
   String get imageUrl;
   @override
-  String get quantity;
+  int get quantity;
   @override
-  String get orderDate;
+  DateTime get orderDate;
   @override
   @JsonKey(ignore: true)
   _$$_OrderModelCopyWith<_$_OrderModel> get copyWith =>
