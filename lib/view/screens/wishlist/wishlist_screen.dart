@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -28,7 +27,7 @@ class WishlistScreen extends HookConsumerWidget {
 
     return wishlistItemsList.isEmpty
         ? const EmptyScreen(
-            imagePath: 'assets/images/offers/Offer1.jpg',
+            imagePath: 'assets/images/offers/shopping-cart.jpeg',
             title: 'Your Wishlist is Empty',
             subtitle: 'Explore more and shortlist some items',
             buttonText: 'Add a wish',
@@ -66,11 +65,16 @@ class WishlistScreen extends HookConsumerWidget {
                 ),
               ],
             ),
-            body: MasonryGridView.count(
+            body: ListView.builder(
               itemCount: wishlistItemsList.length,
-              crossAxisCount: 2,
-              itemBuilder: (context, index) {
-                return WishlistWidget(wishlistModel: wishlistItemsList[index]);
+              itemBuilder: (ctx, index) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+                  child: WishlistWidget(
+                    wishlistModel: wishlistItemsList[index],
+                  ),
+                );
               },
             ),
           );

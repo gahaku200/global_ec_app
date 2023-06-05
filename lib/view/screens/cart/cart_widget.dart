@@ -14,8 +14,6 @@ import '../../../model/cart/cart_model.dart';
 import '../../../services/utils.dart';
 import '../../../view_model/cart_provider.dart';
 import '../../../view_model/products_provider.dart';
-import '../../../view_model/wishlist_provider.dart';
-import '../../widgets/heart_btn.dart';
 import '../../widgets/text_widget.dart';
 
 class CartWidget extends HookConsumerWidget {
@@ -39,154 +37,157 @@ class CartWidget extends HookConsumerWidget {
     final usedPrice = currentProduct.isOnSale
         ? currentProduct.salePrice
         : currentProduct.price;
-    final wishlist = ref.watch(wishlistProvider);
-    final isInWishlist = wishlist.containsKey(currentProduct.id);
     final cartNotifier = ref.read(cartProvider.notifier);
 
     return GestureDetector(
       onTap: () {
         context.go('/ProductDetails/${cartModel.productId}');
       },
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(3),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      height: size.width * 0.25,
-                      width: size.width * 0.25,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: FancyShimmerImage(
-                        imageUrl: currentProduct.imageUrl,
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextWidget(
-                          text: currentProduct.title,
-                          color: color,
-                          textSize: 20,
-                          isTitle: true,
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        SizedBox(
-                          width: size.width * 0.3,
-                          child: Row(
-                            children: [
-                              _quantityController(
-                                fct: () {
-                                  if (quantityTextController.text == '1') {
-                                    return;
-                                  } else {
-                                    cartNotifier.reduceQuantityByOne(
-                                      cartModel.productId,
-                                    );
-                                    quantityTextController.text = (int.parse(
-                                              quantityTextController.text,
-                                            ) -
-                                            1)
-                                        .toString();
-                                  }
-                                },
-                                color: Colors.red,
-                                icon: CupertinoIcons.minus,
-                              ),
-                              Flexible(
-                                child: TextField(
-                                  controller: quantityTextController,
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    focusedBorder: UnderlineInputBorder(),
-                                  ),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp('[0-9]'),
-                                    ),
-                                  ],
-                                  onChanged: (v) {
-                                    if (v.isEmpty) {
-                                      quantityTextController.text = '1';
-                                    } else {
-                                      return;
-                                    }
-                                  },
-                                ),
-                              ),
-                              _quantityController(
-                                fct: () {
-                                  cartNotifier.increaseQuantityByOne(
-                                    cartModel.productId,
-                                  );
-                                  quantityTextController.text =
-                                      (int.parse(quantityTextController.text) +
-                                              1)
-                                          .toString();
-                                },
-                                color: Colors.green,
-                                icon: CupertinoIcons.plus,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Column(
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              await cartNotifier.removeOneItem(
-                                cartId: cartModel.id,
-                                productId: cartModel.productId,
-                                quantity: cartModel.quantity,
-                              );
-                            },
-                            child: const Icon(
-                              CupertinoIcons.cart_badge_minus,
-                              color: Colors.red,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          HeartBTN(
-                            productId: currentProduct.id,
-                            isInWishlist: isInWishlist,
-                          ),
-                          TextWidget(
-                            text:
-                                '\$${(usedPrice * int.parse(quantityTextController.text)).toStringAsFixed(2)}',
-                            color: color,
-                            textSize: 18,
-                            maxLines: 1,
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                  ],
+      child: Padding(
+        padding: const EdgeInsets.all(3),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: FancyShimmerImage(
+                  imageUrl: currentProduct.imageUrlList[0],
+                  height: size.width * 0.22,
+                  width: size.width * 0.3,
                 ),
               ),
-            ),
+              Expanded(
+                child: SizedBox(
+                  height: size.width * 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextWidget(
+                              text: currentProduct.title,
+                              color: color,
+                              textSize: 20,
+                              isTitle: true,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                await cartNotifier.removeOneItem(
+                                  cartId: cartModel.id,
+                                  productId: cartModel.productId,
+                                  quantity: cartModel.quantity,
+                                );
+                              },
+                              child: const Icon(
+                                CupertinoIcons.cart_badge_minus,
+                                color: Colors.red,
+                                size: 25,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: size.width * 0.3,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: color,
+                                  width: 0.2,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _quantityController(
+                                    fct: () {
+                                      if (quantityTextController.text == '1') {
+                                        return;
+                                      } else {
+                                        cartNotifier.reduceQuantityByOne(
+                                          cartModel.productId,
+                                        );
+                                        quantityTextController
+                                            .text = (int.parse(
+                                                  quantityTextController.text,
+                                                ) -
+                                                1)
+                                            .toString();
+                                      }
+                                    },
+                                    color: color,
+                                    icon: CupertinoIcons.minus,
+                                  ),
+                                  Flexible(
+                                    child: TextField(
+                                      controller: quantityTextController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.zero,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      enabled: true,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp('[0-9]'),
+                                        ),
+                                      ],
+                                      onChanged: (v) {
+                                        if (v.isEmpty) {
+                                          quantityTextController.text = '1';
+                                        } else {
+                                          return;
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  _quantityController(
+                                    fct: () {
+                                      cartNotifier.increaseQuantityByOne(
+                                        cartModel.productId,
+                                      );
+                                      quantityTextController.text = (int.parse(
+                                                quantityTextController.text,
+                                              ) +
+                                              1)
+                                          .toString();
+                                    },
+                                    color: color,
+                                    icon: CupertinoIcons.plus,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            TextWidget(
+                              text:
+                                  '\$ ${(usedPrice * int.parse(quantityTextController.text)).toStringAsFixed(2)}',
+                              color: color,
+                              textSize: 18,
+                              maxLines: 1,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -200,22 +201,17 @@ class CartWidget extends HookConsumerWidget {
       flex: 2,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
-        child: Material(
-          color: color,
-          borderRadius: BorderRadius.circular(12),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              // ignore: avoid_dynamic_calls
-              fct();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(6),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 20,
-              ),
+        child: InkWell(
+          onTap: () {
+            // ignore: avoid_dynamic_calls
+            fct();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: Icon(
+              icon,
+              color: color,
+              size: 20,
             ),
           ),
         ),

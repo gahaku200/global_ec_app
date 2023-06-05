@@ -21,7 +21,7 @@ class BottomBarScreen extends HookConsumerWidget {
 
   final List<Map<String, dynamic>> _pages = [
     {'page': const HomeScreen(), 'title': 'Home Screen'},
-    {'page': CategoriesScreen(), 'title': 'Categories Screen'},
+    {'page': const CategoriesScreen(), 'title': 'Categories Screen'},
     {'page': const CartScreen(), 'title': 'Cart Screen'},
     {'page': UserScreen(), 'title': 'User Screen'},
   ];
@@ -33,9 +33,6 @@ class BottomBarScreen extends HookConsumerWidget {
     final carts = ref.watch(cartProvider);
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(_pages[selectedIndex]['title'] as String),
-      // ),
       body: _pages[selectedIndex]['page'] as Widget,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: isDark ? Theme.of(context).cardColor : Colors.white,

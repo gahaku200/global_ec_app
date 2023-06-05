@@ -24,6 +24,7 @@ class OnSaleScreen extends HookConsumerWidget {
     final size = utils.getScreenSize;
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         leading: const BackWidget(),
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -38,18 +39,18 @@ class OnSaleScreen extends HookConsumerWidget {
           ? const EmptyProdWidget(
               text: 'No products on sale yet!,\nStay tuned',
             )
-          : GridView.count(
-              // shrinkWrap: true,
-              // physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              padding: EdgeInsets.zero,
-              // crossAxisSpacing: 10,
-              childAspectRatio: size.width / (size.height * 0.45),
-              children: List.generate(
-                productsOnSale.length,
-                (index) {
-                  return OnSaleWidget(productModel: productsOnSale[index]);
-                },
+          : Padding(
+              padding: EdgeInsets.only(left: size.width * 0.04),
+              child: GridView.count(
+                crossAxisCount: 2,
+                padding: EdgeInsets.zero,
+                childAspectRatio: size.width / (size.height * 0.55),
+                children: List.generate(
+                  productsOnSale.length,
+                  (index) {
+                    return OnSaleWidget(productModel: productsOnSale[index]);
+                  },
+                ),
               ),
             ),
     );

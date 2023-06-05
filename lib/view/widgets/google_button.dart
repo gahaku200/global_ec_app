@@ -86,9 +86,12 @@ class GoogleButton extends HookConsumerWidget {
           children: [
             ColoredBox(
               color: Colors.white,
-              child: Image.asset(
-                'assets/images/offers/Offer1.jpg',
-                width: 40,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Image.asset(
+                  'assets/images/offers/Google.png',
+                  width: 32,
+                ),
               ),
             ),
             const SizedBox(

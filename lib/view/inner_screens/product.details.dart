@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +19,7 @@ import '../../services/global_method.dart';
 import '../../services/utils.dart';
 import '../../view_model/cart_provider.dart';
 import '../../view_model/products_provider.dart';
+import '../../view_model/viewed_provider.dart';
 import '../../view_model/wishlist_provider.dart';
 import '../widgets/heart_btn.dart';
 import '../widgets/text_widget.dart';
@@ -51,7 +52,18 @@ class ProductDetails extends HookConsumerWidget {
     final wishlist = ref.watch(wishlistProvider);
     final isInWishlist = wishlist.containsKey(currentProduct.id);
 
+    useEffect(
+      () {
+        ref
+            .read(viewedProdProvider.notifier)
+            .addProductToHistory(productId: currentProduct.id);
+        return;
+      },
+      [],
+    );
+
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: InkWell(
           borderRadius: BorderRadius.circular(12),
@@ -72,32 +84,42 @@ class ProductDetails extends HookConsumerWidget {
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
-      body: Column(
-        children: [
-          Flexible(
-            flex: 2,
-            child: FancyShimmerImage(
-              imageUrl: currentProduct.imageUrl,
-              boxFit: BoxFit.scaleDown,
-              width: size.width,
-            ),
-          ),
-          Flexible(
-            flex: 3,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 48),
+        child: Column(
+          children: [
+            Flexible(
+              flex: 2,
+              child: Swiper(
+                itemBuilder: (BuildContext context, int index) {
+                  return Image.network(
+                    currentProduct.imageUrlList[index],
+                    fit: BoxFit.scaleDown,
+                    width: size.width,
+                  );
+                },
+                autoplay: true,
+                itemCount: currentProduct.imageUrlList.length,
+                viewportFraction: 0.9,
+                scale: 0.8,
+                pagination: const SwiperPagination(
+                  alignment: Alignment.bottomCenter,
+                  builder: DotSwiperPaginationBuilder(
+                    color: Color.fromRGBO(150, 150, 150, 0.2),
+                    activeColor: Color.fromRGBO(150, 150, 150, 0.9),
+                    activeSize: 8,
+                    size: 7,
+                  ),
                 ),
               ),
+            ),
+            Flexible(
+              flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding:
-                        const EdgeInsets.only(top: 20, left: 30, right: 30),
+                    padding: const EdgeInsets.only(left: 22, right: 22),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -109,9 +131,20 @@ class ProductDetails extends HookConsumerWidget {
                             isTitle: true,
                           ),
                         ),
-                        HeartBTN(
-                          productId: currentProduct.id,
-                          isInWishlist: isInWishlist,
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            border:
+                                Border.all(width: 0.2, color: Colors.black54),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: HeartBTN(
+                              productId: currentProduct.id,
+                              isInWishlist: isInWishlist,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -123,7 +156,7 @@ class ProductDetails extends HookConsumerWidget {
                       children: [
                         TextWidget(
                           text: '\$${usedPrice.toStringAsFixed(2)}/',
-                          color: Colors.green,
+                          color: Colors.red.shade300,
                           textSize: 22,
                           isTitle: true,
                         ),
@@ -154,14 +187,17 @@ class ProductDetails extends HookConsumerWidget {
                             horizontal: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color.fromRGBO(63, 200, 101, 1),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: Colors.black54,
+                              width: 0.2,
+                            ),
                           ),
                           child: TextWidget(
                             text: 'Free delivery',
-                            color: Colors.white,
-                            textSize: 20,
-                            isTitle: true,
+                            color: Colors.black87,
+                            textSize: 18,
                           ),
                         ),
                       ],
@@ -174,84 +210,140 @@ class ProductDetails extends HookConsumerWidget {
                       ? Container(
                           alignment: Alignment.center,
                           child: TextWidget(
-                            text: 'This product is already in your cart!',
-                            color: color,
-                            textSize: 20,
+                            text: 'This product is already in your cart.',
+                            color: Colors.red.shade400,
+                            textSize: 18,
                           ),
                         )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            quantityController(
-                              fct: () {
-                                if (quantity == 1) {
-                                  return;
-                                } else {
-                                  final result = quantity - 1;
-                                  quantityTextController.text =
-                                      result.toString();
-                                  ref.read(quantityProvider.notifier).state =
-                                      result;
-                                }
-                              },
-                              icon: CupertinoIcons.minus,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Flexible(
-                              child: TextField(
-                                controller: quantityTextController,
-                                key: const ValueKey('quantity'),
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                  border: UnderlineInputBorder(),
-                                ),
-                                textAlign: TextAlign.center,
-                                cursorColor: Colors.green,
-                                enabled: true,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp('[0-9]'),
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  if (value.isEmpty) {
-                                    quantityTextController.text = '1';
-                                  } else {
-                                    return;
-                                  }
-                                },
+                      : Center(
+                          child: Container(
+                            width: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: color,
+                                width: 0.2,
                               ),
                             ),
-                            const SizedBox(
-                              width: 5,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                quantityController(
+                                  fct: () {
+                                    if (quantity == 1) {
+                                      return;
+                                    } else {
+                                      final result = quantity - 1;
+                                      quantityTextController.text =
+                                          result.toString();
+                                      ref
+                                          .read(quantityProvider.notifier)
+                                          .state = result;
+                                    }
+                                  },
+                                  icon: CupertinoIcons.minus,
+                                  color: color,
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Flexible(
+                                  child: TextField(
+                                    controller: quantityTextController,
+                                    key: const ValueKey('quantity'),
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.zero,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    enabled: true,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp('[0-9]'),
+                                      ),
+                                    ],
+                                    onChanged: (value) {
+                                      if (value.isEmpty) {
+                                        quantityTextController.text = '1';
+                                      } else {
+                                        return;
+                                      }
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                quantityController(
+                                  fct: () {
+                                    final result = quantity + 1;
+                                    quantityTextController.text =
+                                        result.toString();
+                                    ref.read(quantityProvider.notifier).state =
+                                        result;
+                                  },
+                                  icon: CupertinoIcons.plus,
+                                  color: color,
+                                ),
+                              ],
                             ),
-                            quantityController(
-                              fct: () {
-                                final result = quantity + 1;
-                                quantityTextController.text = result.toString();
-                                ref.read(quantityProvider.notifier).state =
-                                    result;
-                              },
-                              icon: CupertinoIcons.plus,
-                              color: Colors.green,
-                            ),
-                          ],
+                          ),
                         ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 22,
+                      right: 22,
+                    ),
+                    child: Divider(
+                      thickness: 0.1, // 線の太さを指定します（ピクセル単位）
+                      color: color, // 線の色を指定します
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 5,
+                      left: 22,
+                      right: 22,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextWidget(
+                          text: 'Product details',
+                          color: color,
+                          textSize: 18,
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 5,
+                            right: 5,
+                          ),
+                          child: TextWidget(
+                            text: currentProduct.description,
+                            color: color,
+                            textSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const Spacer(),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20,
-                      horizontal: 30,
-                    ),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                      border: Border(
+                        top: BorderSide(
+                          color: color,
+                          width: 0.2,
+                        ),
                       ),
                     ),
                     child: Row(
@@ -263,9 +355,8 @@ class ProductDetails extends HookConsumerWidget {
                             children: [
                               TextWidget(
                                 text: 'Total',
-                                color: Colors.red.shade300,
+                                color: color,
                                 textSize: 20,
-                                isTitle: true,
                               ),
                               const SizedBox(
                                 height: 5,
@@ -298,8 +389,8 @@ class ProductDetails extends HookConsumerWidget {
                         ),
                         Flexible(
                           child: Material(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.lightBlue,
+                            borderRadius: BorderRadius.circular(30),
                             child: InkWell(
                               onTap: isInCart
                                   ? null
@@ -324,9 +415,14 @@ class ProductDetails extends HookConsumerWidget {
                                           .read(cartProvider.notifier)
                                           .fetchCart();
                                     },
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(30),
                               child: Padding(
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.only(
+                                  top: 12,
+                                  left: 20,
+                                  bottom: 12,
+                                  right: 20,
+                                ),
                                 child: TextWidget(
                                   text: isInCart ? 'In cart' : 'Add to cart',
                                   color: Colors.white,
@@ -342,8 +438,8 @@ class ProductDetails extends HookConsumerWidget {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -357,22 +453,17 @@ class ProductDetails extends HookConsumerWidget {
       flex: 2,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
-        child: Material(
-          color: color,
-          borderRadius: BorderRadius.circular(12),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              // ignore: avoid_dynamic_calls
-              fct();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(6),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 20,
-              ),
+        child: InkWell(
+          onTap: () {
+            // ignore: avoid_dynamic_calls
+            fct();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: Icon(
+              icon,
+              color: color,
+              size: 20,
             ),
           ),
         ),

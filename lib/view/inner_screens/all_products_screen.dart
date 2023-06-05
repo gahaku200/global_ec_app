@@ -38,7 +38,7 @@ class AllProductsScreen extends HookConsumerWidget {
         title: TextWidget(
           text: 'All Products',
           color: color,
-          textSize: 20,
+          textSize: 24,
           isTitle: true,
         ),
       ),
