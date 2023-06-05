@@ -22,12 +22,13 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) {
 mixin _$ProductModel {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
-  String get imageUrl => throw _privateConstructorUsedError;
+  List<String> get imageUrlList => throw _privateConstructorUsedError;
   String get productCategoryName => throw _privateConstructorUsedError;
   double get price => throw _privateConstructorUsedError;
   double get salePrice => throw _privateConstructorUsedError;
   bool get isOnSale => throw _privateConstructorUsedError;
   bool get isPiece => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,12 +45,13 @@ abstract class $ProductModelCopyWith<$Res> {
   $Res call(
       {String id,
       String title,
-      String imageUrl,
+      List<String> imageUrlList,
       String productCategoryName,
       double price,
       double salePrice,
       bool isOnSale,
-      bool isPiece});
+      bool isPiece,
+      String description});
 }
 
 /// @nodoc
@@ -67,12 +69,13 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
   $Res call({
     Object? id = null,
     Object? title = null,
-    Object? imageUrl = null,
+    Object? imageUrlList = null,
     Object? productCategoryName = null,
     Object? price = null,
     Object? salePrice = null,
     Object? isOnSale = null,
     Object? isPiece = null,
+    Object? description = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -83,10 +86,10 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      imageUrl: null == imageUrl
-          ? _value.imageUrl
-          : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+      imageUrlList: null == imageUrlList
+          ? _value.imageUrlList
+          : imageUrlList // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       productCategoryName: null == productCategoryName
           ? _value.productCategoryName
           : productCategoryName // ignore: cast_nullable_to_non_nullable
@@ -107,6 +110,10 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
           ? _value.isPiece
           : isPiece // ignore: cast_nullable_to_non_nullable
               as bool,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -122,12 +129,13 @@ abstract class _$$_ProductModelCopyWith<$Res>
   $Res call(
       {String id,
       String title,
-      String imageUrl,
+      List<String> imageUrlList,
       String productCategoryName,
       double price,
       double salePrice,
       bool isOnSale,
-      bool isPiece});
+      bool isPiece,
+      String description});
 }
 
 /// @nodoc
@@ -143,12 +151,13 @@ class __$$_ProductModelCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = null,
-    Object? imageUrl = null,
+    Object? imageUrlList = null,
     Object? productCategoryName = null,
     Object? price = null,
     Object? salePrice = null,
     Object? isOnSale = null,
     Object? isPiece = null,
+    Object? description = null,
   }) {
     return _then(_$_ProductModel(
       id: null == id
@@ -159,10 +168,10 @@ class __$$_ProductModelCopyWithImpl<$Res>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      imageUrl: null == imageUrl
-          ? _value.imageUrl
-          : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+      imageUrlList: null == imageUrlList
+          ? _value._imageUrlList
+          : imageUrlList // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       productCategoryName: null == productCategoryName
           ? _value.productCategoryName
           : productCategoryName // ignore: cast_nullable_to_non_nullable
@@ -183,6 +192,10 @@ class __$$_ProductModelCopyWithImpl<$Res>
           ? _value.isPiece
           : isPiece // ignore: cast_nullable_to_non_nullable
               as bool,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -193,12 +206,14 @@ class _$_ProductModel implements _ProductModel {
   _$_ProductModel(
       {required this.id,
       required this.title,
-      required this.imageUrl,
+      required final List<String> imageUrlList,
       required this.productCategoryName,
       required this.price,
       required this.salePrice,
       required this.isOnSale,
-      required this.isPiece});
+      required this.isPiece,
+      required this.description})
+      : _imageUrlList = imageUrlList;
 
   factory _$_ProductModel.fromJson(Map<String, dynamic> json) =>
       _$$_ProductModelFromJson(json);
@@ -207,8 +222,14 @@ class _$_ProductModel implements _ProductModel {
   final String id;
   @override
   final String title;
+  final List<String> _imageUrlList;
   @override
-  final String imageUrl;
+  List<String> get imageUrlList {
+    if (_imageUrlList is EqualUnmodifiableListView) return _imageUrlList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_imageUrlList);
+  }
+
   @override
   final String productCategoryName;
   @override
@@ -219,10 +240,12 @@ class _$_ProductModel implements _ProductModel {
   final bool isOnSale;
   @override
   final bool isPiece;
+  @override
+  final String description;
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, title: $title, imageUrl: $imageUrl, productCategoryName: $productCategoryName, price: $price, salePrice: $salePrice, isOnSale: $isOnSale, isPiece: $isPiece)';
+    return 'ProductModel(id: $id, title: $title, imageUrlList: $imageUrlList, productCategoryName: $productCategoryName, price: $price, salePrice: $salePrice, isOnSale: $isOnSale, isPiece: $isPiece, description: $description)';
   }
 
   @override
@@ -232,8 +255,8 @@ class _$_ProductModel implements _ProductModel {
             other is _$_ProductModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
-            (identical(other.imageUrl, imageUrl) ||
-                other.imageUrl == imageUrl) &&
+            const DeepCollectionEquality()
+                .equals(other._imageUrlList, _imageUrlList) &&
             (identical(other.productCategoryName, productCategoryName) ||
                 other.productCategoryName == productCategoryName) &&
             (identical(other.price, price) || other.price == price) &&
@@ -241,13 +264,24 @@ class _$_ProductModel implements _ProductModel {
                 other.salePrice == salePrice) &&
             (identical(other.isOnSale, isOnSale) ||
                 other.isOnSale == isOnSale) &&
-            (identical(other.isPiece, isPiece) || other.isPiece == isPiece));
+            (identical(other.isPiece, isPiece) || other.isPiece == isPiece) &&
+            (identical(other.description, description) ||
+                other.description == description));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, imageUrl,
-      productCategoryName, price, salePrice, isOnSale, isPiece);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      title,
+      const DeepCollectionEquality().hash(_imageUrlList),
+      productCategoryName,
+      price,
+      salePrice,
+      isOnSale,
+      isPiece,
+      description);
 
   @JsonKey(ignore: true)
   @override
@@ -267,12 +301,13 @@ abstract class _ProductModel implements ProductModel {
   factory _ProductModel(
       {required final String id,
       required final String title,
-      required final String imageUrl,
+      required final List<String> imageUrlList,
       required final String productCategoryName,
       required final double price,
       required final double salePrice,
       required final bool isOnSale,
-      required final bool isPiece}) = _$_ProductModel;
+      required final bool isPiece,
+      required final String description}) = _$_ProductModel;
 
   factory _ProductModel.fromJson(Map<String, dynamic> json) =
       _$_ProductModel.fromJson;
@@ -282,7 +317,7 @@ abstract class _ProductModel implements ProductModel {
   @override
   String get title;
   @override
-  String get imageUrl;
+  List<String> get imageUrlList;
   @override
   String get productCategoryName;
   @override
@@ -293,6 +328,8 @@ abstract class _ProductModel implements ProductModel {
   bool get isOnSale;
   @override
   bool get isPiece;
+  @override
+  String get description;
   @override
   @JsonKey(ignore: true)
   _$$_ProductModelCopyWith<_$_ProductModel> get copyWith =>

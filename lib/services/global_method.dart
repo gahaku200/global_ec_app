@@ -1,4 +1,7 @@
 // Flutter imports:
+// ignore_for_file: avoid_redundant_argument_values
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -112,11 +115,7 @@ class GlobalMethods {
           }
         ])
       });
-      await Fluttertoast.showToast(
-        msg: 'Item has been added to your cart',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-      );
+      await showToast(context, 'Item has been added to your cart');
       // ignore: avoid_catches_without_on_clauses
     } catch (error) {
       await errorDialog(subtitle: error.toString(), context: context);
@@ -139,14 +138,48 @@ class GlobalMethods {
           }
         ])
       });
-      await Fluttertoast.showToast(
-        msg: 'Item has been added to your wishlist',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-      );
+
+      await showToast(context, 'Item has been added to your wishlist');
       // ignore: avoid_catches_without_on_clauses
     } catch (error) {
       await errorDialog(subtitle: error.toString(), context: context);
     }
+  }
+
+  static Future<void> showToast(
+    BuildContext context,
+    String messsage, {
+    Color backgroundColor = Colors.white,
+    Color textColor = Colors.black,
+  }) async {
+    FToast()
+      ..init(context)
+      ..showToast(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            color: backgroundColor,
+          ),
+          child: Text(
+            messsage,
+            style: TextStyle(
+              color: textColor,
+            ),
+          ),
+        ),
+        toastDuration: const Duration(seconds: 3),
+        positionedToastBuilder: (context, child) {
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                bottom: 60,
+                child: child,
+              ),
+            ],
+          );
+        },
+      );
   }
 }

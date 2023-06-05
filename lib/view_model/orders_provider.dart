@@ -1,10 +1,17 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 // Project imports:
 import '../consts/firebase_consts.dart';
+import '../model/cart/cart_model.dart';
 import '../model/order/order_model.dart';
+import '../services/global_method.dart';
+import 'products_provider.dart';
 
 class OrdersNotifier extends StateNotifier<List<OrderModel>> {
   OrdersNotifier() : super([]);
@@ -36,6 +43,44 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
           ),
         );
       }
+    });
+  }
+
+  Future<void> orderProducts(
+    Map<String, CartModel> carts,
+    WidgetRef ref,
+    double total,
+    BuildContext ctx,
+  ) async {
+    final user = authInstance.currentUser;
+    final orderId = const Uuid().v4();
+
+    carts.forEach((key, value) async {
+      final getCurrProduct = ref.read(productsProvider.notifier).findProdById(
+            value.productId,
+          );
+      try {
+        await FirebaseFirestore.instance.collection('orders').doc(orderId).set({
+          'orderId': orderId,
+          'userId': user!.uid,
+          'productId': value.productId,
+          'price': (getCurrProduct.isOnSale
+                  ? getCurrProduct.salePrice
+                  : getCurrProduct.price) *
+              value.quantity,
+          'totalPrice': total,
+          'quantity': value.quantity,
+          'imageUrl': getCurrProduct.imageUrlList[0],
+          'userName': user.displayName,
+          'orderDate': Timestamp.now(),
+        });
+        // ignore: avoid_catches_without_on_clauses
+      } catch (error) {
+        await GlobalMethods.errorDialog(
+          subtitle: error.toString(),
+          context: ctx,
+        );
+      } finally {}
     });
   }
 }

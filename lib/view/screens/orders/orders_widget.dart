@@ -33,24 +33,63 @@ class OrderWidget extends HookConsumerWidget {
     final getCurrProduct =
         ref.read(productsProvider.notifier).findProdById(orderModel.productId);
 
-    return ListTile(
-      subtitle: Text('Paid: \$${orderModel.price.toStringAsFixed(2)}'),
+    return GestureDetector(
       onTap: () {
-        context.go('/ProductDetails');
+        context.go('/ProductDetails/${orderModel.productId}');
       },
-      leading: FancyShimmerImage(
-        width: size.width * 0.2,
-        imageUrl: getCurrProduct.imageUrl,
-      ),
-      title: TextWidget(
-        text: '${getCurrProduct.title}  x${orderModel.quantity}',
-        color: color,
-        textSize: 18,
-      ),
-      trailing: TextWidget(
-        text: formatDateConvert(orderModel),
-        color: color,
-        textSize: 18,
+      child: Row(
+        children: [
+          const SizedBox(width: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: FancyShimmerImage(
+              height: size.width * 0.15,
+              width: size.width * 0.2,
+              imageUrl: getCurrProduct.imageUrlList[0],
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: SizedBox(
+              height: size.width * 0.15,
+              child: Column(
+                children: [
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      TextWidget(
+                        text: 'Shipping',
+                        color: Colors.red.shade400,
+                        textSize: 13,
+                      ),
+                      const Spacer(),
+                      TextWidget(
+                        text: formatDateConvert(orderModel),
+                        color: Colors.grey.shade500,
+                        textSize: 13,
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      TextWidget(
+                        text:
+                            '${getCurrProduct.title}  x${orderModel.quantity}',
+                        color: color,
+                        textSize: 18,
+                      ),
+                      const Spacer(),
+                      Text('Paid: \$${orderModel.price.toStringAsFixed(2)}'),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+        ],
       ),
     );
   }

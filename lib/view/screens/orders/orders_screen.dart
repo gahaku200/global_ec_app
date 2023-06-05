@@ -23,7 +23,7 @@ class OrderScreen extends HookConsumerWidget {
 
     return ordersList.isEmpty
         ? const EmptyScreen(
-            imagePath: 'assets/images/offers/Offer1.jpg',
+            imagePath: 'assets/images/offers/shopping-cart.jpeg',
             title: 'You didnt place any order yet',
             subtitle: 'order something and make me happy :)',
             buttonText: 'Shop now',
@@ -31,9 +31,9 @@ class OrderScreen extends HookConsumerWidget {
         // ignore: dead_code
         : Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               leading: const BackWidget(),
               elevation: 0,
-              centerTitle: false,
               backgroundColor:
                   Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
               title: TextWidget(
@@ -55,7 +55,7 @@ class OrderScreen extends HookConsumerWidget {
               separatorBuilder: (BuildContext context, int index) {
                 return Divider(
                   color: color,
-                  thickness: 1,
+                  thickness: 0.1,
                 );
               },
             ),

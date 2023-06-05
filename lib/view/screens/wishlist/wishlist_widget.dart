@@ -3,16 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import '../../../consts/firebase_consts.dart';
 import '../../../model/wishlist/wishlist_model.dart';
-import '../../../services/global_method.dart';
 import '../../../services/utils.dart';
-import '../../../view_model/cart_provider.dart';
 import '../../../view_model/products_provider.dart';
 import '../../../view_model/wishlist_provider.dart';
 import '../../widgets/heart_btn.dart';
@@ -39,95 +35,70 @@ class WishlistWidget extends HookConsumerWidget {
         : currentProduct.price;
     final wishlist = ref.watch(wishlistProvider);
     final isInWishlist = wishlist.containsKey(currentProduct.id);
-    final carts = ref.watch(cartProvider);
-    final isInCart = carts.containsKey(currentProduct.id);
 
     return Padding(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(8),
       child: GestureDetector(
         onTap: () {
           context.go('/ProductDetails/${currentProduct.id}');
         },
-        child: Container(
-          height: size.height * 0.2,
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            border: Border.all(color: color),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              Flexible(
-                flex: 2,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 8),
-                  // width: size.width * 0.2,
-                  height: size.width * 0.25,
-                  child: FancyShimmerImage(
-                    imageUrl: currentProduct.imageUrl,
-                  ),
-                ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: FancyShimmerImage(
+                imageUrl: currentProduct.imageUrlList[0],
+                height: size.width * 0.22,
+                width: size.width * 0.3,
               ),
-              Flexible(
-                flex: 3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Column(
+              children: [
+                TextWidget(
+                  text: currentProduct.title,
+                  color: color,
+                  textSize: 20,
+                  maxLines: 2,
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Row(
                   children: [
-                    Flexible(
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: isInCart
-                                ? null
-                                : () {
-                                    final user = authInstance.currentUser;
-                                    if (user == null) {
-                                      GlobalMethods.errorDialog(
-                                        subtitle:
-                                            'No user found, Please login first',
-                                        context: context,
-                                      );
-                                      return;
-                                    }
-                                    GlobalMethods.addToCart(
-                                      productId: currentProduct.id,
-                                      quantity: 1,
-                                      context: context,
-                                    );
-                                    ref.read(cartProvider.notifier).fetchCart();
-                                  },
-                            icon: Icon(
-                              isInCart ? IconlyBold.bag2 : IconlyLight.bag2,
-                              color: isInCart ? Colors.green : color,
-                            ),
-                          ),
-                          HeartBTN(
-                            productId: currentProduct.id,
-                            isInWishlist: isInWishlist,
-                          ),
-                        ],
-                      ),
-                    ),
-                    TextWidget(
-                      text: currentProduct.title,
-                      color: color,
-                      textSize: 20,
-                      maxLines: 2,
-                      isTitle: true,
-                    ),
-                    const SizedBox(height: 5),
                     TextWidget(
                       text: '\$${usedPrice.toStringAsFixed(2)}',
-                      color: color,
-                      textSize: 18,
+                      color: Colors.red.shade300,
+                      textSize: 17,
                       maxLines: 1,
-                      isTitle: true,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Visibility(
+                      // ignore: avoid_bool_literals_in_conditional_expressions
+                      visible: currentProduct.isOnSale ? true : false,
+                      child: Text(
+                        '\$${currentProduct.price.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: color,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+            const Spacer(),
+            HeartBTN(
+              productId: currentProduct.id,
+              isInWishlist: isInWishlist,
+            ),
+          ],
         ),
       ),
     );

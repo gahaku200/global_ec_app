@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -10,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../consts/consts.dart';
 import '../consts/firebase_consts.dart';
 import '../view_model/cart_provider.dart';
+import '../view_model/category_provider.dart';
 import '../view_model/orders_provider.dart';
 import '../view_model/products_provider.dart';
 import '../view_model/wishlist_provider.dart';
@@ -31,6 +35,7 @@ class FetchScreen extends HookConsumerWidget {
     final cartNotifier = ref.read(cartProvider.notifier);
     final wishlistNotifier = ref.read(wishlistProvider.notifier);
     final ordersNotifier = ref.read(ordersProvider.notifier);
+    final categoryNotifier = ref.read(categoryProvider.notifier);
     useEffect(
       () {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -48,6 +53,7 @@ class FetchScreen extends HookConsumerWidget {
               await wishlistNotifier.fetchWishlist();
               await ordersNotifier.fetchOrders();
             }
+            await categoryNotifier.fetchCategory();
             if (isFirst) {
               isFirstNotifier.state = false;
             }
@@ -62,7 +68,7 @@ class FetchScreen extends HookConsumerWidget {
         body: Stack(
           children: [
             Image.asset(
-              images[0],
+              images[Random().nextInt(9)],
               fit: BoxFit.cover,
               height: double.infinity,
             ),

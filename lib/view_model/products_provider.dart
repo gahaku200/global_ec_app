@@ -1,4 +1,7 @@
 // Package imports:
+// ignore_for_file: avoid_dynamic_calls
+
+// Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -19,17 +22,23 @@ class ProductsNotifier extends StateNotifier<List<ProductModel>> {
         .get()
         .then((QuerySnapshot productSnapshot) {
       for (final element in productSnapshot.docs) {
+        final leng = int.parse(element['imageUrlList'].length.toString());
+        final imageUrlList = <String>[];
+        for (var i = 0; i < leng; i++) {
+          imageUrlList.add(element['imageUrlList'][i] as String);
+        }
         array.insert(
           0,
           ProductModel(
             id: element['id'] as String,
             title: element['title'] as String,
-            imageUrl: element['imageUrl'] as String,
+            imageUrlList: imageUrlList,
             productCategoryName: element['productCategoryName'] as String,
             price: element['price'] as double,
             salePrice: element['salePrice'] as double,
             isOnSale: element['isOnSale'] as bool,
             isPiece: element['isPiece'] as bool,
+            description: element['description'] as String,
           ),
         );
       }

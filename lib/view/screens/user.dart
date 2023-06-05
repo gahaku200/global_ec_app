@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../consts/firebase_consts.dart';
 import '../../services/global_method.dart';
 import '../../view_model/dark_theme_provider.dart';
+import '../../view_model/user_provider.dart';
 import '../widgets/text_widget.dart';
 import 'loading_manager.dart';
 
@@ -20,10 +20,6 @@ class UserScreen extends HookConsumerWidget {
   UserScreen({super.key});
 
   final isLoadingProvider = StateProvider((ref) => false);
-  final user = authInstance.currentUser;
-  final emailProvider = StateProvider((ref) => '');
-  final nameProvider = StateProvider((ref) => '');
-  final addressProvider = StateProvider((ref) => '');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,39 +27,17 @@ class UserScreen extends HookConsumerWidget {
     final color = isDark ? Colors.white : Colors.black;
     final addressTextController = useTextEditingController(text: '');
     final isLoading = ref.watch(isLoadingProvider);
-    final email = ref.watch(emailProvider);
-    final name = ref.watch(nameProvider);
-    final address = ref.watch(addressProvider);
     final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
-
-    Future<void> getUserData() async {
-      isLoadingNotifier.state = true;
-      if (user == null) {
-        isLoadingNotifier.state = false;
-        return;
-      }
-      try {
-        final uid = user!.uid;
-        final DocumentSnapshot userDoc =
-            await FirebaseFirestore.instance.collection('users').doc(uid).get();
-        ref.read(emailProvider.notifier).state = userDoc.get('email') as String;
-        ref.read(nameProvider.notifier).state = userDoc.get('name') as String;
-        ref.read(addressProvider.notifier).state =
-            userDoc.get('shipping-address') as String;
-        addressTextController.text = userDoc.get('shipping-address') as String;
-        // ignore: avoid_catches_without_on_clauses
-      } catch (error) {
-        isLoadingNotifier.state = false;
-        await GlobalMethods.errorDialog(subtitle: '$error', context: context);
-      } finally {
-        isLoadingNotifier.state = false;
-      }
-    }
+    final themeStateNotifier = ref.read(themeState.notifier);
+    final user = ref.watch(userProvider);
+    final userNotifier = ref.read(userProvider.notifier);
 
     useEffect(
       () {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          getUserData();
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          isLoadingNotifier.state = true;
+          await userNotifier.getUserData(context);
+          isLoadingNotifier.state = false;
         });
         return;
       },
@@ -81,9 +55,6 @@ class UserScreen extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 15,
-                  ),
                   RichText(
                     text: TextSpan(
                       text: 'Hi,  ',
@@ -94,7 +65,7 @@ class UserScreen extends HookConsumerWidget {
                       ),
                       children: <TextSpan>[
                         TextSpan(
-                          text: name == '' ? 'user' : name,
+                          text: user.name == '' ? 'user' : user.name,
                           style: TextStyle(
                             color: color,
                             fontSize: 25,
@@ -109,7 +80,7 @@ class UserScreen extends HookConsumerWidget {
                     height: 5,
                   ),
                   TextWidget(
-                    text: email == '' ? 'Email' : email,
+                    text: user.email == '' ? 'Email' : user.email,
                     color: color,
                     textSize: 18,
                     // isTitle: true,
@@ -125,7 +96,7 @@ class UserScreen extends HookConsumerWidget {
                   ),
                   _listTile(
                     title: 'Address 2',
-                    subtitle: address,
+                    subtitle: user.address,
                     icon: IconlyLight.profile,
                     onPressed: () async {
                       await _showAddressDialog(
@@ -172,24 +143,24 @@ class UserScreen extends HookConsumerWidget {
                     title: TextWidget(
                       text: isDark ? 'Dark mode' : 'Light mode',
                       color: color,
-                      textSize: 18,
-                      // isTitle: true,
+                      textSize: 22,
                     ),
                     secondary: Icon(
                       isDark
                           ? Icons.dark_mode_outlined
                           : Icons.light_mode_outlined,
                     ),
-                    onChanged: (bool isDark) {
-                      ref.read(themeState.notifier).setDarkTheme(isDark);
-                    },
+                    onChanged: themeStateNotifier.setDarkTheme,
                     value: isDark,
                   ),
+                  const SizedBox(height: 18),
                   _listTile(
-                    title: user == null ? 'Login' : 'Logout',
-                    icon: user == null ? IconlyLight.login : IconlyLight.logout,
+                    title: user.name == '' ? 'Login' : 'Logout',
+                    icon: user.name == ''
+                        ? IconlyLight.login
+                        : IconlyLight.logout,
                     onPressed: () {
-                      if (user == null) {
+                      if (user.name == '') {
                         context.go('/LoginScreen');
                         return;
                       }
@@ -219,6 +190,7 @@ class UserScreen extends HookConsumerWidget {
     WidgetRef ref,
     TextEditingController addressTextController,
   ) async {
+    final userNotifier = ref.read(userProvider.notifier);
     // ignore: inference_failure_on_function_invocation
     await showDialog(
       context: context,
@@ -226,9 +198,6 @@ class UserScreen extends HookConsumerWidget {
         return AlertDialog(
           title: const Text('Update'),
           content: TextField(
-            // onChanged: (value) {
-            //   print('addressTextController ${addressTextController.text}');
-            // },
             controller: addressTextController,
             maxLines: 5,
             decoration: const InputDecoration(
@@ -238,18 +207,11 @@ class UserScreen extends HookConsumerWidget {
           actions: [
             TextButton(
               onPressed: () async {
-                final uid = user!.uid;
                 try {
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(uid)
-                      .update({
-                    'shipping-address': addressTextController.text,
-                  });
-
+                  await userNotifier.updateUserAddress(
+                    addressTextController.text,
+                  );
                   Navigator.pop(context);
-                  ref.read(addressProvider.notifier).state =
-                      addressTextController.text;
                   // ignore: avoid_catches_without_on_clauses
                 } catch (err) {
                   await GlobalMethods.errorDialog(
@@ -278,7 +240,6 @@ class UserScreen extends HookConsumerWidget {
         text: title,
         color: color,
         textSize: 22,
-        // isTitle: true,
       ),
       subtitle: TextWidget(
         text: subtitle ?? '',

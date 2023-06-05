@@ -26,7 +26,7 @@ class ViewedRecentlyScreen extends HookConsumerWidget {
 
     if (viewedProdItemsList.isEmpty) {
       return const EmptyScreen(
-        imagePath: 'assets/images/offers/Offer1.jpg',
+        imagePath: 'assets/images/offers/shopping-cart.jpeg',
         title: 'Your history is empty',
         subtitle: 'No products has been viewed yet!',
         buttonText: 'Shop now',

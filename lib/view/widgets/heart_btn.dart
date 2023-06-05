@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -81,7 +80,7 @@ class HeartBTN extends HookConsumerWidget {
               ),
             )
           : Icon(
-              isInWishlist ? IconlyBold.heart : IconlyLight.heart,
+              isInWishlist ? Icons.favorite : Icons.favorite_border_outlined,
               size: 22,
               color: isInWishlist ? Colors.red : color,
             ),

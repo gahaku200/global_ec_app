@@ -1,9 +1,11 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:card_swiper/card_swiper.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -26,113 +28,115 @@ class HomeScreen extends HookConsumerWidget {
     final allProducts = ref.watch(productsProvider);
     final productsOnSale =
         ref.read(productsProvider.notifier).getOnSaleProducts;
+    final controller = useAnimationController(
+      duration: const Duration(milliseconds: 1000),
+    );
+    final currentIndex = useState(0);
+
+    useEffect(
+      () {
+        final timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+          controller.forward().then((value) {
+            currentIndex.value =
+                (currentIndex.value + 1) % Consts.offerImages.length;
+            controller.reset();
+          });
+        });
+        return timer.cancel;
+      },
+      [],
+    );
 
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 25, bottom: 8),
+              child: Text(
+                'Sugoi！Collection',
+                maxLines: 10,
+                style: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  color: color,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(
-              height: size.height * 0.33,
-              child: Swiper(
-                itemBuilder: (BuildContext context, int index) {
-                  return Image.asset(
-                    Consts.offerImages[index],
+              height: size.height * 0.30,
+              child: Stack(
+                children: [
+                  Image.asset(
+                    Consts.offerImages[currentIndex.value],
                     fit: BoxFit.fill,
-                  );
-                },
-                autoplay: true,
-                itemCount: Consts.offerImages.length,
-                pagination: const SwiperPagination(
-                  alignment: Alignment.bottomCenter,
-                  builder: DotSwiperPaginationBuilder(
-                    color: Colors.white,
-                    activeColor: Colors.red,
                   ),
-                ),
-                // control: const SwiperControl(color: Colors.black),
-              ),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            TextButton(
-              onPressed: () {
-                context.go('/OnSaleScreen');
-              },
-              child: TextWidget(
-                text: 'View all',
-                maxLines: 1,
-                color: Colors.blue,
-                textSize: 20,
-              ),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Row(
-              children: [
-                RotatedBox(
-                  quarterTurns: -1,
-                  child: Row(
-                    children: [
-                      TextWidget(
-                        text: 'On sale'.toUpperCase(),
-                        color: Colors.red,
-                        textSize: 22,
-                        isTitle: true,
-                      ),
-                      const Icon(
-                        IconlyLight.discount,
-                        color: Colors.red,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Flexible(
-                  child: SizedBox(
-                    height: size.height * 0.24,
-                    child: ListView.builder(
-                      itemCount: productsOnSale.length < 10
-                          ? productsOnSale.length
-                          : 10,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (ctx, index) {
-                        return OnSaleWidget(
-                          productModel: productsOnSale[index],
-                        );
-                      },
+                  FadeTransition(
+                    opacity: controller,
+                    child: Image.asset(
+                      Consts.offerImages[
+                          (currentIndex.value + 1) % Consts.offerImages.length],
+                      fit: BoxFit.fill,
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
+                ],
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.only(left: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextWidget(
-                    text: 'Our products',
+                    text: 'ON SALE',
+                    color: Colors.red,
+                    textSize: 22,
+                    isTitle: true,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.go('/OnSaleScreen');
+                    },
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: size.height * 0.25,
+              child: ListView.builder(
+                itemCount:
+                    productsOnSale.length < 10 ? productsOnSale.length : 10,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (ctx, index) {
+                  return OnSaleWidget(
+                    productModel: productsOnSale[index],
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextWidget(
+                    text: 'All products',
                     color: color,
                     textSize: 22,
                     isTitle: true,
                   ),
-                  // const Spacer(),
                   TextButton(
                     onPressed: () {
                       context.go('/AllProductsScreen');
                     },
-                    child: TextWidget(
-                      text: 'Browse all',
-                      maxLines: 1,
-                      color: Colors.blue,
-                      textSize: 20,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: color,
                     ),
                   ),
                 ],

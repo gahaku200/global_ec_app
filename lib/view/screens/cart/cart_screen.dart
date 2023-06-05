@@ -2,14 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:uuid/uuid.dart';
 
 // Project imports:
-import '../../../consts/firebase_consts.dart';
 import '../../../services/global_method.dart';
 import '../../../services/utils.dart';
 import '../../../view_model/cart_provider.dart';
@@ -35,10 +31,11 @@ class CartScreen extends HookConsumerWidget {
             title: 'Your cart is empty',
             subtitle: 'Add something and make me happy :)',
             buttonText: 'Shop now',
-            imagePath: 'assets/images/offers/Offer1.jpg',
+            imagePath: 'assets/images/offers/shopping-cart.jpeg',
           )
         : Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               automaticallyImplyLeading: false,
               elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -70,12 +67,6 @@ class CartScreen extends HookConsumerWidget {
             ),
             body: Column(
               children: [
-                _checkout(
-                  utils: utils,
-                  color: color,
-                  ref: ref,
-                  ctx: context,
-                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: cartItemsList.length,
@@ -86,6 +77,12 @@ class CartScreen extends HookConsumerWidget {
                       );
                     },
                   ),
+                ),
+                _checkout(
+                  utils: utils,
+                  color: color,
+                  ref: ref,
+                  ctx: context,
                 ),
               ],
             ),
@@ -102,6 +99,7 @@ class CartScreen extends HookConsumerWidget {
     final carts = ref.watch(cartProvider);
     final productsNotifier = ref.read(productsProvider.notifier);
     final cartNotifier = ref.read(cartProvider.notifier);
+    final ordersNotifier = ref.read(ordersProvider.notifier);
 
     var total = 0.0;
     carts.forEach((key, value) {
@@ -111,81 +109,70 @@ class CartScreen extends HookConsumerWidget {
               : getCurrProduct.price) *
           value.quantity;
     });
-    return SizedBox(
-      width: double.infinity,
-      height: size.height * 0.1,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Row(
-          children: [
-            Material(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(10),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(10),
-                onTap: () async {
-                  final user = authInstance.currentUser;
-                  final orderId = const Uuid().v4();
-
-                  carts.forEach((key, value) async {
-                    final getCurrProduct = productsNotifier.findProdById(
-                      value.productId,
-                    );
-                    try {
-                      await FirebaseFirestore.instance
-                          .collection('orders')
-                          .doc(orderId)
-                          .set({
-                        'orderId': orderId,
-                        'userId': user!.uid,
-                        'productId': value.productId,
-                        'price': (getCurrProduct.isOnSale
-                                ? getCurrProduct.salePrice
-                                : getCurrProduct.price) *
-                            value.quantity,
-                        'totalPrice': total,
-                        'quantity': value.quantity,
-                        'imageUrl': getCurrProduct.imageUrl,
-                        'userName': user.displayName,
-                        'orderDate': Timestamp.now(),
-                      });
-                      // ignore: avoid_catches_without_on_clauses
-                    } catch (error) {
-                      await GlobalMethods.errorDialog(
-                        subtitle: error.toString(),
-                        context: ctx,
-                      );
-                    } finally {}
-                  });
-                  await cartNotifier.clearOnlineCart();
-                  cartNotifier.clearLocalCart();
-                  await ref.read(ordersProvider.notifier).fetchOrders();
-                  await Fluttertoast.showToast(
-                    msg: 'Your order has been placed',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: TextWidget(
-                    text: 'Order Now',
-                    color: Colors.white,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: color,
+            width: 0.1,
+          ),
+        ),
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        height: size.height * 0.1,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  TextWidget(
+                    text: 'Total  ',
+                    color: color,
+                    textSize: 18,
+                  ),
+                  TextWidget(
+                    text: '\$ ${total.toStringAsFixed(2)}',
+                    color: color,
                     textSize: 20,
+                    isTitle: true,
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Material(
+                color: Colors.lightBlue,
+                borderRadius: BorderRadius.circular(30),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(30),
+                  onTap: () async {
+                    await ordersNotifier.orderProducts(carts, ref, total, ctx);
+                    await cartNotifier.clearOnlineCart();
+                    cartNotifier.clearLocalCart();
+                    await ref.read(ordersProvider.notifier).fetchOrders();
+                    await GlobalMethods.showToast(
+                      ctx,
+                      'Your order has been placed',
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                      left: 18,
+                      bottom: 10,
+                      right: 18,
+                    ),
+                    child: TextWidget(
+                      text: 'Order Now',
+                      color: Colors.white,
+                      textSize: 18,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const Spacer(),
-            FittedBox(
-              child: TextWidget(
-                text: 'Total: \$${total.toStringAsFixed(2)}',
-                color: color,
-                textSize: 18,
-                isTitle: true,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
