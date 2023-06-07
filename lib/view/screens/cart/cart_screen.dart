@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -147,14 +148,26 @@ class CartScreen extends HookConsumerWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(30),
                   onTap: () async {
-                    await ordersNotifier.orderProducts(carts, ref, total, ctx);
-                    await cartNotifier.clearOnlineCart();
-                    cartNotifier.clearLocalCart();
-                    await ref.read(ordersProvider.notifier).fetchOrders();
-                    await GlobalMethods.showToast(
-                      ctx,
-                      'Your order has been placed',
-                    );
+                    final result = await cartNotifier.confirmStock(ref, ctx);
+                    if (result == 'success') {
+                      await ordersNotifier.orderProducts(
+                        carts,
+                        ref,
+                        total,
+                        ctx,
+                      );
+                      await cartNotifier.clearOnlineCart();
+                      cartNotifier.clearLocalCart();
+                      await ref.read(ordersProvider.notifier).fetchOrders();
+                      final fToast = FToast();
+                      await GlobalMethods.showToast(
+                        fToast,
+                        ctx,
+                        'Your order has been placed',
+                      );
+                    } else if (result == 'failed') {
+                      await cartNotifier.fetchCart();
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(

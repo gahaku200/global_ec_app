@@ -115,7 +115,8 @@ class GlobalMethods {
           }
         ])
       });
-      await showToast(context, 'Item has been added to your cart');
+      final fToast = FToast();
+      await showToast(fToast, context, 'Item has been added to your cart');
       // ignore: avoid_catches_without_on_clauses
     } catch (error) {
       await errorDialog(subtitle: error.toString(), context: context);
@@ -138,8 +139,8 @@ class GlobalMethods {
           }
         ])
       });
-
-      await showToast(context, 'Item has been added to your wishlist');
+      final fToast = FToast();
+      await showToast(fToast, context, 'Item has been added to your wishlist');
       // ignore: avoid_catches_without_on_clauses
     } catch (error) {
       await errorDialog(subtitle: error.toString(), context: context);
@@ -147,12 +148,14 @@ class GlobalMethods {
   }
 
   static Future<void> showToast(
+    FToast fToast,
     BuildContext context,
     String messsage, {
     Color backgroundColor = Colors.white,
     Color textColor = Colors.black,
   }) async {
-    FToast()
+    fToast
+      ..removeCustomToast()
       ..init(context)
       ..showToast(
         child: Container(

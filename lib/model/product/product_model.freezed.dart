@@ -29,6 +29,7 @@ mixin _$ProductModel {
   bool get isOnSale => throw _privateConstructorUsedError;
   bool get isPiece => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
+  int get stock => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -51,7 +52,8 @@ abstract class $ProductModelCopyWith<$Res> {
       double salePrice,
       bool isOnSale,
       bool isPiece,
-      String description});
+      String description,
+      int stock});
 }
 
 /// @nodoc
@@ -76,6 +78,7 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
     Object? isOnSale = null,
     Object? isPiece = null,
     Object? description = null,
+    Object? stock = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -114,6 +117,10 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
+      stock: null == stock
+          ? _value.stock
+          : stock // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -135,7 +142,8 @@ abstract class _$$_ProductModelCopyWith<$Res>
       double salePrice,
       bool isOnSale,
       bool isPiece,
-      String description});
+      String description,
+      int stock});
 }
 
 /// @nodoc
@@ -158,6 +166,7 @@ class __$$_ProductModelCopyWithImpl<$Res>
     Object? isOnSale = null,
     Object? isPiece = null,
     Object? description = null,
+    Object? stock = null,
   }) {
     return _then(_$_ProductModel(
       id: null == id
@@ -196,6 +205,10 @@ class __$$_ProductModelCopyWithImpl<$Res>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
+      stock: null == stock
+          ? _value.stock
+          : stock // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -212,7 +225,8 @@ class _$_ProductModel implements _ProductModel {
       required this.salePrice,
       required this.isOnSale,
       required this.isPiece,
-      required this.description})
+      required this.description,
+      required this.stock})
       : _imageUrlList = imageUrlList;
 
   factory _$_ProductModel.fromJson(Map<String, dynamic> json) =>
@@ -242,10 +256,12 @@ class _$_ProductModel implements _ProductModel {
   final bool isPiece;
   @override
   final String description;
+  @override
+  final int stock;
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, title: $title, imageUrlList: $imageUrlList, productCategoryName: $productCategoryName, price: $price, salePrice: $salePrice, isOnSale: $isOnSale, isPiece: $isPiece, description: $description)';
+    return 'ProductModel(id: $id, title: $title, imageUrlList: $imageUrlList, productCategoryName: $productCategoryName, price: $price, salePrice: $salePrice, isOnSale: $isOnSale, isPiece: $isPiece, description: $description, stock: $stock)';
   }
 
   @override
@@ -266,7 +282,8 @@ class _$_ProductModel implements _ProductModel {
                 other.isOnSale == isOnSale) &&
             (identical(other.isPiece, isPiece) || other.isPiece == isPiece) &&
             (identical(other.description, description) ||
-                other.description == description));
+                other.description == description) &&
+            (identical(other.stock, stock) || other.stock == stock));
   }
 
   @JsonKey(ignore: true)
@@ -281,7 +298,8 @@ class _$_ProductModel implements _ProductModel {
       salePrice,
       isOnSale,
       isPiece,
-      description);
+      description,
+      stock);
 
   @JsonKey(ignore: true)
   @override
@@ -307,7 +325,8 @@ abstract class _ProductModel implements ProductModel {
       required final double salePrice,
       required final bool isOnSale,
       required final bool isPiece,
-      required final String description}) = _$_ProductModel;
+      required final String description,
+      required final int stock}) = _$_ProductModel;
 
   factory _ProductModel.fromJson(Map<String, dynamic> json) =
       _$_ProductModel.fromJson;
@@ -330,6 +349,8 @@ abstract class _ProductModel implements ProductModel {
   bool get isPiece;
   @override
   String get description;
+  @override
+  int get stock;
   @override
   @JsonKey(ignore: true)
   _$$_ProductModelCopyWith<_$_ProductModel> get copyWith =>

@@ -60,6 +60,7 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
             value.productId,
           );
       try {
+        // 注文登録
         await FirebaseFirestore.instance.collection('orders').doc(orderId).set({
           'orderId': orderId,
           'userId': user!.uid,
@@ -74,6 +75,21 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
           'userName': user.displayName,
           'orderDate': Timestamp.now(),
         });
+        // 在庫を減らす
+        final productSnapshot = await FirebaseFirestore.instance
+            .collection('products')
+            .where('id', isEqualTo: getCurrProduct.id)
+            .get();
+        final stock = productSnapshot.docs[0]['stock'] as int;
+        await FirebaseFirestore.instance
+            .collection('products')
+            .doc(getCurrProduct.id)
+            .set(
+          {
+            'stock': stock - value.quantity,
+          },
+          SetOptions(merge: true),
+        );
         // ignore: avoid_catches_without_on_clauses
       } catch (error) {
         await GlobalMethods.errorDialog(
