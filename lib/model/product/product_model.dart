@@ -16,6 +16,7 @@ class ProductModel with _$ProductModel {
     required bool isOnSale,
     required bool isPiece,
     required String description,
+    required int stock,
   }) = _ProductModel;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>

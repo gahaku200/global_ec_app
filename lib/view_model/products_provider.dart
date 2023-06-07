@@ -39,6 +39,7 @@ class ProductsNotifier extends StateNotifier<List<ProductModel>> {
             isOnSale: element['isOnSale'] as bool,
             isPiece: element['isPiece'] as bool,
             description: element['description'] as String,
+            stock: element['stock'] as int,
           ),
         );
       }

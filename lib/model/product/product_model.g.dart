@@ -19,6 +19,7 @@ _$_ProductModel _$$_ProductModelFromJson(Map<String, dynamic> json) =>
       isOnSale: json['isOnSale'] as bool,
       isPiece: json['isPiece'] as bool,
       description: json['description'] as String,
+      stock: json['stock'] as int,
     );
 
 Map<String, dynamic> _$$_ProductModelToJson(_$_ProductModel instance) =>
@@ -32,4 +33,5 @@ Map<String, dynamic> _$$_ProductModelToJson(_$_ProductModel instance) =>
       'isOnSale': instance.isOnSale,
       'isPiece': instance.isPiece,
       'description': instance.description,
+      'stock': instance.stock,
     };

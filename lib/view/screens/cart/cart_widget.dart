@@ -5,12 +5,13 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import '../../../model/cart/cart_model.dart';
+import '../../../services/global_method.dart';
 import '../../../services/utils.dart';
 import '../../../view_model/cart_provider.dart';
 import '../../../view_model/products_provider.dart';
@@ -31,7 +32,15 @@ class CartWidget extends HookConsumerWidget {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
     final size = utils.getScreenSize;
-    final quantityTextController = useTextEditingController(text: q.toString());
+    final carts = ref.watch(cartProvider);
+    final quantityTextController = TextEditingController(
+      text: carts.values
+          .firstWhere(
+            (element) => element.productId == cartModel.productId,
+          )
+          .quantity
+          .toString(),
+    );
     final currentProduct =
         ref.read(productsProvider.notifier).findProdById(cartModel.productId);
     final usedPrice = currentProduct.isOnSale
@@ -152,7 +161,19 @@ class CartWidget extends HookConsumerWidget {
                                     ),
                                   ),
                                   _quantityController(
-                                    fct: () {
+                                    fct: () async {
+                                      if (int.parse(
+                                            quantityTextController.text,
+                                          ) >
+                                          currentProduct.stock - 1) {
+                                        final fToast = FToast();
+                                        await GlobalMethods.showToast(
+                                          fToast,
+                                          context,
+                                          'Due to limited stock, you cannot select more',
+                                        );
+                                        return;
+                                      }
                                       cartNotifier.increaseQuantityByOne(
                                         cartModel.productId,
                                       );

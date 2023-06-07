@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -45,7 +46,9 @@ class ForgetPasswordScreen extends HookConsumerWidget {
             email: emailTextController.text.toLowerCase(),
           );
           await SystemChannels.textInput.invokeMethod('TextInput.hide');
+          final fToast = FToast();
           await GlobalMethods.showToast(
+            fToast,
             context,
             'An email has been sent to your email address',
             backgroundColor: Colors.grey.shade600,
