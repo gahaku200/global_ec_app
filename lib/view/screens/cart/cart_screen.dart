@@ -74,7 +74,6 @@ class CartScreen extends HookConsumerWidget {
                     itemBuilder: (ctx, index) {
                       return CartWidget(
                         cartModel: cartItemsList[index],
-                        q: cartItemsList[index].quantity,
                       );
                     },
                   ),

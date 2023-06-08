@@ -13,12 +13,20 @@ import '../../../view_model/products_provider.dart';
 import '../../widgets/text_widget.dart';
 
 class OrderWidget extends HookConsumerWidget {
-  const OrderWidget({
+  OrderWidget({
     super.key,
     required this.orderModel,
   });
 
   final OrderModel orderModel;
+
+  final List<String> orderStatus = [
+    'Payment completed',
+    'Shipping',
+    'Received',
+    'Cancel',
+    'Returns',
+  ];
 
   String formatDateConvert(OrderModel orderModel) {
     final orderDate = orderModel.orderDate;
@@ -58,7 +66,7 @@ class OrderWidget extends HookConsumerWidget {
                   Row(
                     children: [
                       TextWidget(
-                        text: 'Shipping',
+                        text: orderStatus[orderModel.orderStatus],
                         color: Colors.red.shade400,
                         textSize: 13,
                       ),
