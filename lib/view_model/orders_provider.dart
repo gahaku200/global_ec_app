@@ -39,6 +39,7 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
             price: element['price'] as double,
             imageUrl: element['imageUrl'] as String,
             quantity: element['quantity'] as int,
+            orderStatus: element['orderStatus'] as int,
             orderDate: (element['orderDate'] as Timestamp).toDate(),
           ),
         );
@@ -73,6 +74,7 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
           'quantity': value.quantity,
           'imageUrl': getCurrProduct.imageUrlList[0],
           'userName': user.displayName,
+          'orderStatus': 0,
           'orderDate': Timestamp.now(),
         });
         // 在庫を減らす

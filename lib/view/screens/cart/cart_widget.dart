@@ -21,11 +21,9 @@ class CartWidget extends HookConsumerWidget {
   const CartWidget({
     super.key,
     required this.cartModel,
-    required this.q,
   });
 
   final CartModel cartModel;
-  final int q;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

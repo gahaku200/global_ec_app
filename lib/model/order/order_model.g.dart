@@ -16,6 +16,7 @@ _$_OrderModel _$$_OrderModelFromJson(Map<String, dynamic> json) =>
       imageUrl: json['imageUrl'] as String,
       quantity: json['quantity'] as int,
       orderDate: DateTime.parse(json['orderDate'] as String),
+      orderStatus: json['orderStatus'] as int,
     );
 
 Map<String, dynamic> _$$_OrderModelToJson(_$_OrderModel instance) =>
@@ -28,4 +29,5 @@ Map<String, dynamic> _$$_OrderModelToJson(_$_OrderModel instance) =>
       'imageUrl': instance.imageUrl,
       'quantity': instance.quantity,
       'orderDate': instance.orderDate.toIso8601String(),
+      'orderStatus': instance.orderStatus,
     };
