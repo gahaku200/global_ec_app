@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import '../../view_model/dark_theme_provider.dart';
+import '../../services/utils.dart';
 import 'text_widget.dart';
 
 class CategoriesWidget extends HookConsumerWidget {
@@ -20,9 +20,9 @@ class CategoriesWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isDark = ref.watch(themeState);
-    final color = isDark ? Colors.white : Colors.black;
+    final utils = Utils(context);
+    final color = ref.watch(utils.getTheme);
+    final size = utils.getScreenSize;
 
     return InkWell(
       onTap: () {
@@ -31,8 +31,8 @@ class CategoriesWidget extends HookConsumerWidget {
       child: Column(
         children: [
           SizedBox(
-            height: screenWidth * 0.35,
-            width: screenWidth * 0.4,
+            height: size.width * 0.35,
+            width: size.width * 0.4,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(

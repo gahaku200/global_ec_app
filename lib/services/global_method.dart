@@ -14,6 +14,9 @@ import '../consts/firebase_consts.dart';
 import '../view/widgets/text_widget.dart';
 
 class GlobalMethods {
+  static const Color defaultTextColorBlack = Color.fromRGBO(0, 0, 0, 0.85);
+  static const Color defaultTextColorWhite = Color.fromRGBO(255, 255, 255, 0.9);
+
   static Future<void> warningDialog({
     required String title,
     required String subtitle,
@@ -151,8 +154,8 @@ class GlobalMethods {
     FToast fToast,
     BuildContext context,
     String messsage, {
-    Color backgroundColor = Colors.white,
-    Color textColor = Colors.black,
+    Color backgroundColor = defaultTextColorWhite,
+    Color textColor = defaultTextColorBlack,
   }) async {
     fToast
       ..removeCustomToast()

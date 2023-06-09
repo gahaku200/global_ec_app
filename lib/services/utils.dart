@@ -13,7 +13,9 @@ class Utils {
 
   final getTheme = Provider((ref) {
     final isDark = ref.watch(themeState);
-    return isDark ? Colors.white : Colors.black;
+    return isDark
+        ? Colors.white.withOpacity(0.9)
+        : Colors.black.withOpacity(0.85);
   });
 
   Size get getScreenSize => MediaQuery.of(context).size;
