@@ -27,6 +27,7 @@ class TextWidget extends StatelessWidget {
         color: color,
         fontSize: textSize,
         fontWeight: isTitle ? FontWeight.bold : FontWeight.normal,
+        decoration: TextDecoration.none,
       ),
     );
   }

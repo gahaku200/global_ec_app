@@ -269,7 +269,7 @@ class LoginScreen extends HookConsumerWidget {
                         context.go('/FetchScreen');
                       },
                       buttonText: 'Continue as a guest',
-                      primary: Colors.black,
+                      primary: Colors.black.withOpacity(0.85),
                     ),
                     const SizedBox(
                       height: 10,

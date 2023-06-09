@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import '../../consts/firebase_consts.dart';
 import '../../services/global_method.dart';
-import '../../services/utils.dart';
 import '../../view_model/products_provider.dart';
 import '../../view_model/wishlist_provider.dart';
 
@@ -25,8 +24,6 @@ class HeartBTN extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final utils = Utils(context);
-    final color = ref.watch(utils.getTheme);
     final getCurrProduct =
         ref.read(productsProvider.notifier).findProdById(productId);
     final loading = ref.watch(loadingProvider);
@@ -82,7 +79,7 @@ class HeartBTN extends HookConsumerWidget {
           : Icon(
               isInWishlist ? Icons.favorite : Icons.favorite_border_outlined,
               size: 22,
-              color: isInWishlist ? Colors.red : color,
+              color: isInWishlist ? Colors.red : Colors.black.withOpacity(0.85),
             ),
     );
   }
