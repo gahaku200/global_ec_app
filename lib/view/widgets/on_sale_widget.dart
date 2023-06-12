@@ -26,44 +26,46 @@ class OnSaleWidget extends HookConsumerWidget {
     final color = ref.watch(utils.getTheme);
     final size = utils.getScreenSize;
 
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            context.go('/ProductDetails/${productModel.id}');
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: FancyShimmerImage(
-                  imageUrl: productModel.imageUrlList[0],
-                  height: size.width * 0.32,
-                  width: size.width * 0.4,
+    return productModel.stock < 1
+        ? Container()
+        : Padding(
+            padding: const EdgeInsets.all(8),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  context.go('/ProductDetails/${productModel.id}');
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: FancyShimmerImage(
+                        imageUrl: productModel.imageUrlList[0],
+                        height: size.width * 0.32,
+                        width: size.width * 0.4,
+                      ),
+                    ),
+                    PriceWidget(
+                      salePrice: productModel.salePrice,
+                      price: productModel.price,
+                      textPrice: '1',
+                      isOnSale: true,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    TextWidget(
+                      text: productModel.title,
+                      color: color,
+                      textSize: 16,
+                      isTitle: true,
+                    ),
+                  ],
                 ),
               ),
-              PriceWidget(
-                salePrice: productModel.salePrice,
-                price: productModel.price,
-                textPrice: '1',
-                isOnSale: true,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              TextWidget(
-                text: productModel.title,
-                color: color,
-                textSize: 16,
-                isTitle: true,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }

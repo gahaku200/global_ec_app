@@ -17,6 +17,7 @@ import 'view/inner_screens/product.details.dart';
 import 'view/screens/auth/forget_password.dart';
 import 'view/screens/auth/login.dart';
 import 'view/screens/auth/register.dart';
+import 'view/screens/auth/user_info.dart';
 import 'view/screens/btm_bar.dart';
 import 'view/screens/orders/orders_screen.dart';
 import 'view/screens/viewed_recently/viewed_recently.dart';
@@ -113,6 +114,12 @@ class App extends HookConsumerWidget {
             path: 'FetchScreen',
             builder: (BuildContext context, GoRouterState state) {
               return FetchScreen();
+            },
+          ),
+          GoRoute(
+            path: 'UserInfoScreen',
+            builder: (BuildContext context, GoRouterState state) {
+              return UserInfoScreen();
             },
           ),
         ],

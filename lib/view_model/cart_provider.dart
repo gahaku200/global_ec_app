@@ -60,7 +60,6 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
   Future<void> removeOneItem({
     required String cartId,
     required String productId,
-    required int quantity,
   }) async {
     final user = authInstance.currentUser;
     final userDoc = await userCollection.doc(user!.uid).get();
@@ -97,16 +96,26 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
     try {
       var overStock = 0;
       final firebaseInstance = FirebaseFirestore.instance;
+      final carts = state.values;
+      final removeLists = <CartModel>[];
 
-      for (final value in state.values) {
+      for (final cart in carts) {
         final productSnapshot = await firebaseInstance
             .collection('products')
-            .where('id', isEqualTo: value.productId)
+            .where('id', isEqualTo: cart.productId)
             .get();
 
         final stock = productSnapshot.docs[0]['stock'] as int;
 
-        if (value.quantity > stock) {
+        if (stock < 1) {
+          overStock++;
+          removeLists.add(cart);
+          await GlobalMethods.errorDialog(
+            subtitle:
+                '${productSnapshot.docs[0]['title']} is out of stock, so it is removed from the cart.',
+            context: ctx,
+          );
+        } else if (cart.quantity > stock) {
           overStock++;
           final userDoc = firebaseInstance.collection('users').doc(uid);
           final userSnapshot = await userDoc.get();
@@ -114,8 +123,8 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
 
           // ユーザーカート内の特定の要素を更新
           final updatedUserCart = userCart.map((cartItem) {
-            if (cartItem['cartId'] == value.id &&
-                cartItem['productId'] == value.productId) {
+            if (cartItem['cartId'] == cart.id &&
+                cartItem['productId'] == cart.productId) {
               return {
                 'cartId': cartItem['cartId'],
                 'productId': cartItem['productId'],
@@ -140,6 +149,12 @@ class CartNotifier extends StateNotifier<Map<String, CartModel>> {
             context: ctx,
           );
         }
+      }
+      for (final cart in removeLists) {
+        await removeOneItem(
+          cartId: cart.id,
+          productId: cart.productId,
+        );
       }
       return overStock == 0 ? 'success' : 'failed';
       // ignore: avoid_catches_without_on_clauses

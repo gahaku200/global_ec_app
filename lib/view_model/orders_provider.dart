@@ -22,14 +22,14 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
 
   Future<void> fetchOrders() async {
     final user = authInstance.currentUser;
+    final orderArray = <OrderModel>[];
     await FirebaseFirestore.instance
         .collection('orders')
         .where('userId', isEqualTo: user!.uid)
         .get()
         .then((QuerySnapshot ordersSnapshot) {
-      state = [];
       for (final element in ordersSnapshot.docs) {
-        state.insert(
+        orderArray.insert(
           0,
           OrderModel(
             orderId: element['orderId'] as String,
@@ -44,7 +44,10 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
           ),
         );
       }
+      orderArray.sort((a, b) => b.orderDate.compareTo(a.orderDate));
     });
+    state = [];
+    state = orderArray;
   }
 
   Future<void> orderProducts(
@@ -54,9 +57,9 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
     BuildContext ctx,
   ) async {
     final user = authInstance.currentUser;
-    final orderId = const Uuid().v4();
 
     carts.forEach((key, value) async {
+      final orderId = const Uuid().v4();
       final getCurrProduct = ref.read(productsProvider.notifier).findProdById(
             value.productId,
           );

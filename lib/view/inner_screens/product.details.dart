@@ -283,7 +283,8 @@ class ProductDetails extends HookConsumerWidget {
                                           children: [
                                             quantityController(
                                               fct: () {
-                                                if (quantity == 1) {
+                                                if (quantity == 1 ||
+                                                    quantity == 0) {
                                                   return;
                                                 } else {
                                                   final result = quantity - 1;

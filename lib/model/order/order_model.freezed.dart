@@ -27,8 +27,8 @@ mixin _$OrderModel {
   double get price => throw _privateConstructorUsedError;
   String get imageUrl => throw _privateConstructorUsedError;
   int get quantity => throw _privateConstructorUsedError;
-  DateTime get orderDate => throw _privateConstructorUsedError;
   int get orderStatus => throw _privateConstructorUsedError;
+  DateTime get orderDate => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -50,8 +50,8 @@ abstract class $OrderModelCopyWith<$Res> {
       double price,
       String imageUrl,
       int quantity,
-      DateTime orderDate,
-      int orderStatus});
+      int orderStatus,
+      DateTime orderDate});
 }
 
 /// @nodoc
@@ -74,8 +74,8 @@ class _$OrderModelCopyWithImpl<$Res, $Val extends OrderModel>
     Object? price = null,
     Object? imageUrl = null,
     Object? quantity = null,
-    Object? orderDate = null,
     Object? orderStatus = null,
+    Object? orderDate = null,
   }) {
     return _then(_value.copyWith(
       orderId: null == orderId
@@ -106,14 +106,14 @@ class _$OrderModelCopyWithImpl<$Res, $Val extends OrderModel>
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
               as int,
-      orderDate: null == orderDate
-          ? _value.orderDate
-          : orderDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       orderStatus: null == orderStatus
           ? _value.orderStatus
           : orderStatus // ignore: cast_nullable_to_non_nullable
               as int,
+      orderDate: null == orderDate
+          ? _value.orderDate
+          : orderDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
     ) as $Val);
   }
 }
@@ -134,8 +134,8 @@ abstract class _$$_OrderModelCopyWith<$Res>
       double price,
       String imageUrl,
       int quantity,
-      DateTime orderDate,
-      int orderStatus});
+      int orderStatus,
+      DateTime orderDate});
 }
 
 /// @nodoc
@@ -156,8 +156,8 @@ class __$$_OrderModelCopyWithImpl<$Res>
     Object? price = null,
     Object? imageUrl = null,
     Object? quantity = null,
-    Object? orderDate = null,
     Object? orderStatus = null,
+    Object? orderDate = null,
   }) {
     return _then(_$_OrderModel(
       orderId: null == orderId
@@ -188,14 +188,14 @@ class __$$_OrderModelCopyWithImpl<$Res>
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
               as int,
-      orderDate: null == orderDate
-          ? _value.orderDate
-          : orderDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       orderStatus: null == orderStatus
           ? _value.orderStatus
           : orderStatus // ignore: cast_nullable_to_non_nullable
               as int,
+      orderDate: null == orderDate
+          ? _value.orderDate
+          : orderDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
     ));
   }
 }
@@ -211,8 +211,8 @@ class _$_OrderModel implements _OrderModel {
       required this.price,
       required this.imageUrl,
       required this.quantity,
-      required this.orderDate,
-      required this.orderStatus});
+      required this.orderStatus,
+      required this.orderDate});
 
   factory _$_OrderModel.fromJson(Map<String, dynamic> json) =>
       _$$_OrderModelFromJson(json);
@@ -232,13 +232,13 @@ class _$_OrderModel implements _OrderModel {
   @override
   final int quantity;
   @override
-  final DateTime orderDate;
-  @override
   final int orderStatus;
+  @override
+  final DateTime orderDate;
 
   @override
   String toString() {
-    return 'OrderModel(orderId: $orderId, userId: $userId, productId: $productId, userName: $userName, price: $price, imageUrl: $imageUrl, quantity: $quantity, orderDate: $orderDate, orderStatus: $orderStatus)';
+    return 'OrderModel(orderId: $orderId, userId: $userId, productId: $productId, userName: $userName, price: $price, imageUrl: $imageUrl, quantity: $quantity, orderStatus: $orderStatus, orderDate: $orderDate)';
   }
 
   @override
@@ -257,16 +257,16 @@ class _$_OrderModel implements _OrderModel {
                 other.imageUrl == imageUrl) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
-            (identical(other.orderDate, orderDate) ||
-                other.orderDate == orderDate) &&
             (identical(other.orderStatus, orderStatus) ||
-                other.orderStatus == orderStatus));
+                other.orderStatus == orderStatus) &&
+            (identical(other.orderDate, orderDate) ||
+                other.orderDate == orderDate));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, orderId, userId, productId,
-      userName, price, imageUrl, quantity, orderDate, orderStatus);
+      userName, price, imageUrl, quantity, orderStatus, orderDate);
 
   @JsonKey(ignore: true)
   @override
@@ -291,8 +291,8 @@ abstract class _OrderModel implements OrderModel {
       required final double price,
       required final String imageUrl,
       required final int quantity,
-      required final DateTime orderDate,
-      required final int orderStatus}) = _$_OrderModel;
+      required final int orderStatus,
+      required final DateTime orderDate}) = _$_OrderModel;
 
   factory _OrderModel.fromJson(Map<String, dynamic> json) =
       _$_OrderModel.fromJson;
@@ -312,9 +312,9 @@ abstract class _OrderModel implements OrderModel {
   @override
   int get quantity;
   @override
-  DateTime get orderDate;
-  @override
   int get orderStatus;
+  @override
+  DateTime get orderDate;
   @override
   @JsonKey(ignore: true)
   _$$_OrderModelCopyWith<_$_OrderModel> get copyWith =>
