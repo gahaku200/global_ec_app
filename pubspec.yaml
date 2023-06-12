@@ -57,6 +57,9 @@ dependencies:
   uuid: ^3.0.7
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.1
+  flutter_datetime_picker_plus: ^2.0.1
+  intl: ^0.18.1
+  country_code_picker: ^3.0.0
 
 dev_dependencies:
   flutter_test:

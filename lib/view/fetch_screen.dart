@@ -16,6 +16,7 @@ import '../view_model/cart_provider.dart';
 import '../view_model/category_provider.dart';
 import '../view_model/orders_provider.dart';
 import '../view_model/products_provider.dart';
+import '../view_model/user_provider.dart';
 import '../view_model/wishlist_provider.dart';
 import 'screens/btm_bar.dart';
 
@@ -36,6 +37,7 @@ class FetchScreen extends HookConsumerWidget {
     final wishlistNotifier = ref.read(wishlistProvider.notifier);
     final ordersNotifier = ref.read(ordersProvider.notifier);
     final categoryNotifier = ref.read(categoryProvider.notifier);
+    final userNotifier = ref.read(userProvider.notifier);
     useEffect(
       () {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -52,6 +54,7 @@ class FetchScreen extends HookConsumerWidget {
               await cartNotifier.fetchCart();
               await wishlistNotifier.fetchWishlist();
               await ordersNotifier.fetchOrders();
+              await userNotifier.getUserData(context);
             }
             await categoryNotifier.fetchCategory();
             if (isFirst) {

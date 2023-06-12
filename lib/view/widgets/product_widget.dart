@@ -32,72 +32,74 @@ class ProductWidget extends HookConsumerWidget {
     final wishlist = ref.watch(wishlistProvider);
     final isInWishlist = wishlist.containsKey(productModel.id);
 
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Material(
-        borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context).cardColor,
-        child: InkWell(
-          onTap: () {
-            context.go('/ProductDetails/${productModel.id}');
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: FancyShimmerImage(
-                      imageUrl: productModel.imageUrlList[0],
-                      height: size.width * 0.32,
-                      width: size.width * 0.45,
+    return productModel.stock < 1
+        ? Container()
+        : Padding(
+            padding: const EdgeInsets.all(8),
+            child: Material(
+              borderRadius: BorderRadius.circular(12),
+              color: Theme.of(context).cardColor,
+              child: InkWell(
+                onTap: () {
+                  context.go('/ProductDetails/${productModel.id}');
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: FancyShimmerImage(
+                            imageUrl: productModel.imageUrlList[0],
+                            height: size.width * 0.32,
+                            width: size.width * 0.45,
+                          ),
+                        ),
+                        Positioned(
+                          right: 6,
+                          top: 6,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: HeartBTN(
+                              productId: productModel.id,
+                              isInWishlist: isInWishlist,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Positioned(
-                    right: 6,
-                    top: 6,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
                       ),
-                      padding: const EdgeInsets.all(4),
-                      child: HeartBTN(
-                        productId: productModel.id,
-                        isInWishlist: isInWishlist,
+                      child: TextWidget(
+                        text: productModel.title,
+                        color: color,
+                        maxLines: 1,
+                        textSize: 18,
+                        isTitle: true,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                ),
-                child: TextWidget(
-                  text: productModel.title,
-                  color: color,
-                  maxLines: 1,
-                  textSize: 18,
-                  isTitle: true,
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: PriceWidget(
+                        salePrice: productModel.salePrice,
+                        price: productModel.price,
+                        textPrice: quantityTextController.text,
+                        isOnSale: productModel.isOnSale,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: PriceWidget(
-                  salePrice: productModel.salePrice,
-                  price: productModel.price,
-                  textPrice: quantityTextController.text,
-                  isOnSale: productModel.isOnSale,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }

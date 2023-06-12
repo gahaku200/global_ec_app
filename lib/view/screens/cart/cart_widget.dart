@@ -88,7 +88,6 @@ class CartWidget extends HookConsumerWidget {
                                 await cartNotifier.removeOneItem(
                                   cartId: cartModel.id,
                                   productId: cartModel.productId,
-                                  quantity: cartModel.quantity,
                                 );
                               },
                               child: const Icon(
@@ -117,7 +116,8 @@ class CartWidget extends HookConsumerWidget {
                                 children: [
                                   _quantityController(
                                     fct: () {
-                                      if (quantityTextController.text == '1') {
+                                      if (quantityTextController.text == '1' ||
+                                          quantityTextController.text == '0') {
                                         return;
                                       } else {
                                         cartNotifier.reduceQuantityByOne(

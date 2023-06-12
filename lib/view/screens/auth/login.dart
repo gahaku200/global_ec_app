@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:card_swiper/card_swiper.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import '../../../consts/consts.dart';
-import '../../../consts/firebase_consts.dart';
-import '../../../services/global_method.dart';
+import '../../../view_model/user_provider.dart';
 import '../../fetch_screen.dart';
 import '../../widgets/auth_button.dart';
 import '../../widgets/google_button.dart';
@@ -34,40 +32,7 @@ class LoginScreen extends HookConsumerWidget {
     final isVisiable = ref.watch(_obscureText);
     final isLoading = ref.watch(isLoadingProvider);
     final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
-
-    Future<void> submitFormOnLogin() async {
-      final isValid = _formKey.currentState!.validate();
-      FocusScope.of(context).unfocus();
-      if (isValid) {
-        _formKey.currentState!.save();
-        isLoadingNotifier.state = true;
-        try {
-          await authInstance.signInWithEmailAndPassword(
-            email: emailTextController.text.toLowerCase().trim(),
-            password: passTextController.text.trim(),
-          );
-          isLoadingNotifier.state = true;
-          context.go('/FetchScreen');
-        } on FirebaseException catch (error) {
-          await GlobalMethods.errorDialog(
-            subtitle: '${error.message}',
-            context: context,
-          );
-          isLoadingNotifier.state = false;
-          // ignore: avoid_catches_without_on_clauses
-        } catch (error) {
-          await GlobalMethods.errorDialog(
-            subtitle: '$error',
-            context: context,
-          );
-          isLoadingNotifier.state = false;
-        } finally {
-          isLoadingNotifier.state = false;
-        }
-      } else {
-        isLoadingNotifier.state = false;
-      }
-    }
+    final userNotifier = ref.read(userProvider.notifier);
 
     return LoadingManager(
       isLoading: isLoading,
@@ -156,7 +121,17 @@ class LoginScreen extends HookConsumerWidget {
                           // password
                           TextFormField(
                             textInputAction: TextInputAction.done,
-                            onEditingComplete: submitFormOnLogin,
+                            onEditingComplete: () {
+                              isLoadingNotifier.state = true;
+                              userNotifier.submitFormOnLogin(
+                                context,
+                                ref,
+                                _formKey,
+                                emailTextController.text,
+                                passTextController.text,
+                              );
+                              isLoadingNotifier.state = false;
+                            },
                             controller: passTextController,
                             focusNode: passFocusNode,
                             obscureText: isVisiable,
@@ -223,7 +198,17 @@ class LoginScreen extends HookConsumerWidget {
                       height: 10,
                     ),
                     AuthButton(
-                      fct: submitFormOnLogin,
+                      fct: () {
+                        isLoadingNotifier.state = true;
+                        userNotifier.submitFormOnLogin(
+                          context,
+                          ref,
+                          _formKey,
+                          emailTextController.text,
+                          passTextController.text,
+                        );
+                        isLoadingNotifier.state = false;
+                      },
                       buttonText: 'Login',
                     ),
                     const SizedBox(

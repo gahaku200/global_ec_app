@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:card_swiper/card_swiper.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_router/go_router.dart';
@@ -12,10 +11,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import '../../../consts/consts.dart';
-import '../../../consts/firebase_consts.dart';
-import '../../../services/global_method.dart';
 import '../../../services/utils.dart';
-import '../../fetch_screen.dart';
+import '../../../view_model/user_provider.dart';
 import '../../widgets/auth_button.dart';
 import '../../widgets/text_widget.dart';
 import '../loading_manager.dart';
@@ -41,55 +38,7 @@ class RegisterScreen extends HookConsumerWidget {
     final isVisiable = ref.watch(_obscureText);
     final isLoading = ref.watch(isLoadingProvider);
     final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
-
-    Future<void> submitFormOnRegister() async {
-      final isValid = _formKey.currentState!.validate();
-      FocusScope.of(context).unfocus();
-      isLoadingNotifier.state = true;
-      if (isValid) {
-        _formKey.currentState!.save();
-        try {
-          await authInstance.createUserWithEmailAndPassword(
-            email: emailTextController.text.toLowerCase().trim(),
-            password: passTextController.text.trim(),
-          );
-          final user = authInstance.currentUser;
-          final uid = user!.uid;
-          await user.updateDisplayName(fullNameController.text);
-          await user.reload();
-          await FirebaseFirestore.instance.collection('users').doc(uid).set({
-            'id': uid,
-            'name': fullNameController.text,
-            'email': emailTextController.text.toLowerCase(),
-            'shipping-address': addressTextController.text,
-            // ignore: inference_failure_on_collection_literal
-            'userWish': [],
-            // ignore: inference_failure_on_collection_literal
-            'userCart': [],
-            'createdAt': Timestamp.now(),
-          });
-          ref.read(isFirstProvider.notifier).state = true;
-          context.go('/FetchScreen');
-        } on FirebaseException catch (error) {
-          await GlobalMethods.errorDialog(
-            subtitle: '${error.message}',
-            context: context,
-          );
-          isLoadingNotifier.state = false;
-          // ignore: avoid_catches_without_on_clauses
-        } catch (error) {
-          await GlobalMethods.errorDialog(
-            subtitle: '$error',
-            context: context,
-          );
-          isLoadingNotifier.state = false;
-        } finally {
-          isLoadingNotifier.state = false;
-        }
-      } else {
-        isLoadingNotifier.state = false;
-      }
-    }
+    final userNotifier = ref.read(userProvider.notifier);
 
     return Scaffold(
       body: LoadingManager(
@@ -273,7 +222,19 @@ class RegisterScreen extends HookConsumerWidget {
                           TextFormField(
                             focusNode: addressFocusNode,
                             textInputAction: TextInputAction.done,
-                            onEditingComplete: submitFormOnRegister,
+                            onEditingComplete: () async {
+                              isLoadingNotifier.state = true;
+                              await userNotifier.submitFormOnRegister(
+                                context,
+                                ref,
+                                _formKey,
+                                emailTextController.text,
+                                passTextController.text,
+                                fullNameController.text,
+                                addressTextController.text,
+                              );
+                              isLoadingNotifier.state = false;
+                            },
                             controller: addressTextController,
                             validator: (value) {
                               if (value!.isEmpty || value.length < 10) {
@@ -326,8 +287,18 @@ class RegisterScreen extends HookConsumerWidget {
                       height: 10,
                     ),
                     AuthButton(
-                      fct: () {
-                        submitFormOnRegister();
+                      fct: () async {
+                        isLoadingNotifier.state = true;
+                        await userNotifier.submitFormOnRegister(
+                          context,
+                          ref,
+                          _formKey,
+                          emailTextController.text,
+                          passTextController.text,
+                          fullNameController.text,
+                          addressTextController.text,
+                        );
+                        isLoadingNotifier.state = false;
                       },
                       buttonText: 'Sign up',
                     ),

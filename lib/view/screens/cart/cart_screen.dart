@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -12,6 +13,7 @@ import '../../../services/utils.dart';
 import '../../../view_model/cart_provider.dart';
 import '../../../view_model/orders_provider.dart';
 import '../../../view_model/products_provider.dart';
+import '../../../view_model/user_provider.dart';
 import '../../widgets/empty_screen.dart';
 import '../../widgets/text_widget.dart';
 import 'cart_widget.dart';
@@ -100,6 +102,7 @@ class CartScreen extends HookConsumerWidget {
     final productsNotifier = ref.read(productsProvider.notifier);
     final cartNotifier = ref.read(cartProvider.notifier);
     final ordersNotifier = ref.read(ordersProvider.notifier);
+    final userNotifier = ref.read(userProvider.notifier);
 
     var total = 0.0;
     carts.forEach((key, value) {
@@ -147,25 +150,52 @@ class CartScreen extends HookConsumerWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(30),
                   onTap: () async {
-                    final result = await cartNotifier.confirmStock(ref, ctx);
-                    if (result == 'success') {
-                      await ordersNotifier.orderProducts(
-                        carts,
-                        ref,
-                        total,
-                        ctx,
+                    if (userNotifier.checkUserInfoEnough()) {
+                      final result = await cartNotifier.confirmStock(ref, ctx);
+                      if (result == 'success') {
+                        await ordersNotifier.orderProducts(
+                          carts,
+                          ref,
+                          total,
+                          ctx,
+                        );
+                        await cartNotifier.clearOnlineCart();
+                        cartNotifier.clearLocalCart();
+                        await ref.read(ordersProvider.notifier).fetchOrders();
+                        final fToast = FToast();
+                        await GlobalMethods.showToast(
+                          fToast,
+                          ctx,
+                          'Your order has been placed',
+                        );
+                      } else if (result == 'failed') {
+                        await cartNotifier.fetchCart();
+                      }
+                    } else {
+                      // ignore: inference_failure_on_function_invocation
+                      await showDialog(
+                        context: ctx,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('An Error occured'),
+                            content: const Text(
+                              'Insufficient user information. Add all user information.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  context.go('/UserInfoScreen');
+                                },
+                                child: TextWidget(
+                                  color: Colors.cyan,
+                                  text: 'Ok',
+                                  textSize: 18,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       );
-                      await cartNotifier.clearOnlineCart();
-                      cartNotifier.clearLocalCart();
-                      await ref.read(ordersProvider.notifier).fetchOrders();
-                      final fToast = FToast();
-                      await GlobalMethods.showToast(
-                        fToast,
-                        ctx,
-                        'Your order has been placed',
-                      );
-                    } else if (result == 'failed') {
-                      await cartNotifier.fetchCart();
                     }
                   },
                   child: Padding(

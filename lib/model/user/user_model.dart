@@ -10,6 +10,11 @@ class UserModel with _$UserModel {
     required String name,
     required String email,
     required String address,
+    @Default(-1) int sex,
+    @Default('') String birthday,
+    @Default('') String country,
+    @Default('') String zipcode,
+    @Default('') String phoneNumber,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

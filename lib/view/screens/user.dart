@@ -27,7 +27,6 @@ class UserScreen extends HookConsumerWidget {
     final utils = Utils(context);
     final color = ref.watch(utils.getTheme);
     final isDark = ref.watch(themeState);
-    final addressTextController = useTextEditingController(text: '');
     final isLoading = ref.watch(isLoadingProvider);
     final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
     final themeStateNotifier = ref.read(themeState.notifier);
@@ -61,7 +60,7 @@ class UserScreen extends HookConsumerWidget {
                 ),
                 RichText(
                   text: TextSpan(
-                    text: 'Hi,  ',
+                    text: 'User:  ',
                     style: const TextStyle(
                       color: Colors.cyan,
                       fontSize: 27,
@@ -69,10 +68,11 @@ class UserScreen extends HookConsumerWidget {
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                        text: user.name == '' ? 'user' : user.name,
+                        text:
+                            user.name == '' ? 'Guest not logged in' : user.name,
                         style: TextStyle(
                           color: color,
-                          fontSize: 25,
+                          fontSize: 23,
                           fontWeight: FontWeight.normal,
                         ),
                         recognizer: TapGestureRecognizer()..onTap = () {},
@@ -80,45 +80,8 @@ class UserScreen extends HookConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextWidget(
-                  text: user.email == '' ? 'Email' : user.email,
-                  color: color,
-                  textSize: 18,
-                ),
-                user.address != ''
-                    ? Column(
-                        children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          TextWidget(
-                            text: user.address,
-                            color: color,
-                            textSize: 18,
-                          ),
-                        ],
-                      )
-                    : Container(),
-                const SizedBox(
-                  height: 10,
-                ),
                 const Divider(
                   thickness: 2,
-                ),
-                _listTile(
-                  title: 'Address',
-                  icon: IconlyLight.profile,
-                  onPressed: () async {
-                    await _showAddressDialog(
-                      context,
-                      ref,
-                      addressTextController,
-                    );
-                  },
-                  color: color,
                 ),
                 _listTile(
                   title: 'Orders',
@@ -144,14 +107,26 @@ class UserScreen extends HookConsumerWidget {
                   },
                   color: color,
                 ),
-                _listTile(
-                  title: 'Forget password',
-                  icon: IconlyLight.unlock,
-                  onPressed: () {
-                    context.go('/ForgetPasswordScreen');
-                  },
-                  color: color,
-                ),
+                user.name != ''
+                    ? _listTile(
+                        title: 'User info',
+                        icon: IconlyLight.profile,
+                        onPressed: () async {
+                          context.go('/UserInfoScreen');
+                        },
+                        color: color,
+                      )
+                    : Container(),
+                user.name != ''
+                    ? _listTile(
+                        title: 'Forget password',
+                        icon: IconlyLight.unlock,
+                        onPressed: () {
+                          context.go('/ForgetPasswordScreen');
+                        },
+                        color: color,
+                      )
+                    : Container(),
                 SwitchListTile(
                   title: TextWidget(
                     text: isDark ? 'Dark mode' : 'Light mode',
@@ -183,6 +158,7 @@ class UserScreen extends HookConsumerWidget {
                       subtitle: 'Do you wanna sign out?',
                       fct: () async {
                         await authInstance.signOut();
+                        userNotifier.signOut();
                         context.go('/LoginScreen');
                       },
                       context: context,
@@ -195,49 +171,6 @@ class UserScreen extends HookConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> _showAddressDialog(
-    BuildContext context,
-    WidgetRef ref,
-    TextEditingController addressTextController,
-  ) async {
-    final userNotifier = ref.read(userProvider.notifier);
-    // ignore: inference_failure_on_function_invocation
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Update'),
-          content: TextField(
-            controller: addressTextController,
-            maxLines: 5,
-            decoration: const InputDecoration(
-              hintText: 'Your address',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                try {
-                  await userNotifier.updateUserAddress(
-                    addressTextController.text,
-                  );
-                  Navigator.pop(context);
-                  // ignore: avoid_catches_without_on_clauses
-                } catch (err) {
-                  await GlobalMethods.errorDialog(
-                    subtitle: err.toString(),
-                    context: context,
-                  );
-                }
-              },
-              child: const Text('Update'),
-            ),
-          ],
-        );
-      },
     );
   }
 
