@@ -60,6 +60,8 @@ dependencies:
   flutter_datetime_picker_plus: ^2.0.1
   intl: ^0.18.1
   country_code_picker: ^3.0.0
+  firebase_storage: ^11.2.3
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:

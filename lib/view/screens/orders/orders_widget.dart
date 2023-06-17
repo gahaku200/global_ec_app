@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -50,10 +50,14 @@ class OrderWidget extends HookConsumerWidget {
           const SizedBox(width: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: FancyShimmerImage(
+            child: CachedNetworkImage(
+              imageUrl: getCurrProduct.imageUrlList[0],
               height: size.width * 0.15,
               width: size.width * 0.2,
-              imageUrl: getCurrProduct.imageUrlList[0],
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(
+                value: downloadProgress.progress,
+              ),
             ),
           ),
           const SizedBox(width: 10),

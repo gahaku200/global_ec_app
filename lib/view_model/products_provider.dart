@@ -3,6 +3,7 @@
 
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -16,23 +17,28 @@ class ProductsNotifier extends StateNotifier<List<ProductModel>> {
   }
 
   Future<void> fetchProducts() async {
+    final storageRef = FirebaseStorage.instance.ref();
     final array = <ProductModel>[];
     await FirebaseFirestore.instance
         .collection('products')
         .get()
-        .then((QuerySnapshot productSnapshot) {
+        .then((QuerySnapshot productSnapshot) async {
       for (final element in productSnapshot.docs) {
-        final leng = int.parse(element['imageUrlList'].length.toString());
-        final imageUrlList = <String>[];
-        for (var i = 0; i < leng; i++) {
-          imageUrlList.add(element['imageUrlList'][i] as String);
-        }
+        final imageUrlList = element['imageUrlList'] as List<dynamic>;
+        final tasks = imageUrlList
+            .map(
+              (imageUrl) =>
+                  storageRef.child('productsImages/$imageUrl').getDownloadURL(),
+            )
+            .toList();
+        final results = await Future.wait(tasks);
+        final urls = results.cast<String>();
         array.insert(
           0,
           ProductModel(
             id: element['id'] as String,
             title: element['title'] as String,
-            imageUrlList: imageUrlList,
+            imageUrlList: urls,
             productCategoryName: element['productCategoryName'] as String,
             price: element['price'] as double,
             salePrice: element['salePrice'] as double,
