@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -52,10 +52,15 @@ class ProductWidget extends HookConsumerWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: FancyShimmerImage(
+                          child: CachedNetworkImage(
                             imageUrl: productModel.imageUrlList[0],
                             height: size.width * 0.32,
                             width: size.width * 0.45,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(
+                              value: downloadProgress.progress,
+                            ),
                           ),
                         ),
                         Positioned(

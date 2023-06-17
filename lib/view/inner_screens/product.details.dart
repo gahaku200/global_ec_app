@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -109,10 +110,15 @@ class ProductDetails extends HookConsumerWidget {
                             height: size.height * 0.4,
                             child: Swiper(
                               itemBuilder: (BuildContext context, int index) {
-                                return Image.network(
-                                  currentProduct.imageUrlList[index],
-                                  fit: BoxFit.scaleDown,
+                                return CachedNetworkImage(
+                                  imageUrl: currentProduct.imageUrlList[index],
                                   width: size.width,
+                                  fit: BoxFit.scaleDown,
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                  ),
                                 );
                               },
                               autoplay: true,

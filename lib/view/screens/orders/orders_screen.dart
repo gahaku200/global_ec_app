@@ -28,7 +28,6 @@ class OrderScreen extends HookConsumerWidget {
             subtitle: 'order something and make me happy :)',
             buttonText: 'Shop now',
           )
-        // ignore: dead_code
         : Scaffold(
             appBar: AppBar(
               centerTitle: true,
