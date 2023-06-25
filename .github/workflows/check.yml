@@ -42,8 +42,7 @@ jobs:
         run: echo "::add-matcher::.github/analyzer-problem-matcher.json"
 
       - name: Generate .env file
-        run: |
-          cp .env.example .env
+        run: touch .env
 
       - name: Run flutter analyze
         shell: bash
@@ -101,8 +100,7 @@ jobs:
         run: flutter pub get
 
       - name: Generate .env file
-        run: |
-          cp .env.example .env
+        run: touch .env
 
       - name: Run flutter test
         run: flutter test
