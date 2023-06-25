@@ -49,7 +49,7 @@ jobs:
 
       - name: Build app bundle
         id: build
-        run: flutter build appbundle --flavor dev
+        run: flutter build appbundle --flavor dev --dart-define=FLAVOR=dev -t lib/main-dev.dart
 
       - name: Get Package name
         run: |
