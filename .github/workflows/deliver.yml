@@ -20,13 +20,13 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '12.x'
+          distribution: "zulu"
+          java-version: "12.x"
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
           cache: true
 
       - name: Run flutter version
@@ -35,7 +35,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1.2'
+          ruby-version: "3.1.2"
 
       - name: Install Fastlane
         run: cd android && bundle install && cd ..
@@ -46,6 +46,14 @@ jobs:
       - name: Get Version Number
         run: |
           echo "RELEASE_NAME=$(flutter pub run cider version | sed -E 's/([0-9.]+)\+([0-9]+)/\2(\1)/g')" >> $GITHUB_ENV
+
+      - name: Generate .env file
+        env:
+          STRIPE_PUBLIC_KEY_DEV: ${{ vars.STRIPE_PUBLIC_KEY_DEV }}
+          STRIPE_PUBLIC_KEY_PRO: ${{ vars.STRIPE_PUBLIC_KEY_PRO }}
+        run: |
+          echo "STRIPE_PUBLIC_KEY_DEV=$STRIPE_PUBLIC_KEY_DEV\n" > .env
+          echo "STRIPE_PUBLIC_KEY_PRO=$STRIPE_PUBLIC_KEY_PRO\n" > .env
 
       - name: Build app bundle
         id: build
