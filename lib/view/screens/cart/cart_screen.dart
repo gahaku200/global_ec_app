@@ -18,6 +18,8 @@ import '../../widgets/empty_screen.dart';
 import '../../widgets/text_widget.dart';
 import 'cart_widget.dart';
 
+final loadingProvider = StateProvider((_) => false);
+
 class CartScreen extends HookConsumerWidget {
   const CartScreen({super.key});
 
@@ -103,6 +105,7 @@ class CartScreen extends HookConsumerWidget {
     final cartNotifier = ref.read(cartProvider.notifier);
     final ordersNotifier = ref.read(ordersProvider.notifier);
     final userNotifier = ref.read(userProvider.notifier);
+    final isloading = ref.watch(loadingProvider);
 
     var total = 0.0;
     carts.forEach((key, value) {
@@ -144,75 +147,90 @@ class CartScreen extends HookConsumerWidget {
                 ],
               ),
               const Spacer(),
-              Material(
-                color: Colors.lightBlue,
-                borderRadius: BorderRadius.circular(30),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(30),
-                  onTap: () async {
-                    if (userNotifier.checkUserInfoEnough()) {
-                      final result = await cartNotifier.confirmStock(ref, ctx);
-                      if (result == 'success') {
-                        await ordersNotifier.orderProducts(
-                          carts,
-                          ref,
-                          total,
-                          ctx,
-                        );
-                        await cartNotifier.clearOnlineCart();
-                        cartNotifier.clearLocalCart();
-                        await ref.read(ordersProvider.notifier).fetchOrders();
-                        final fToast = FToast();
-                        await GlobalMethods.showToast(
-                          fToast,
-                          ctx,
-                          'Your order has been placed',
-                        );
-                      } else if (result == 'failed') {
-                        await cartNotifier.fetchCart();
-                      }
-                    } else {
-                      // ignore: inference_failure_on_function_invocation
-                      await showDialog(
-                        context: ctx,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('An Error occured'),
-                            content: const Text(
-                              'Insufficient user information. Add all user information.',
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  context.go('/UserInfoScreen');
-                                },
-                                child: TextWidget(
-                                  color: Colors.cyan,
-                                  text: 'Ok',
-                                  textSize: 18,
-                                ),
-                              ),
-                            ],
-                          );
+              isloading
+                  ? const CircularProgressIndicator()
+                  : Material(
+                      color: Colors.lightBlue,
+                      borderRadius: BorderRadius.circular(30),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(30),
+                        onTap: () async {
+                          ref.read(loadingProvider.notifier).state = true;
+                          if (userNotifier.checkUserInfoEnough()) {
+                            final stockResult =
+                                await cartNotifier.confirmStock(ref, ctx);
+                            if (stockResult == 'success') {
+                              final paymentResult =
+                                  await ordersNotifier.orderProducts(
+                                ref,
+                                total,
+                                ctx,
+                              );
+                              if (paymentResult == 'success') {
+                                await ordersNotifier.saveOrderedProducts(
+                                  carts,
+                                  ref,
+                                  total,
+                                  ctx,
+                                );
+                                await cartNotifier.clearOnlineCart();
+                                cartNotifier.clearLocalCart();
+                                await ref
+                                    .read(ordersProvider.notifier)
+                                    .fetchOrders();
+                                final fToast = FToast();
+                                await GlobalMethods.showToast(
+                                  fToast,
+                                  ctx,
+                                  'Your order has been placed',
+                                );
+                              }
+                            } else if (stockResult == 'failed') {
+                              await cartNotifier.fetchCart();
+                            }
+                          } else {
+                            // ignore: inference_failure_on_function_invocation
+                            await showDialog(
+                              context: ctx,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('An Error occured'),
+                                  content: const Text(
+                                    'Insufficient user information. Add all user information.',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        context.go('/UserInfoScreen');
+                                      },
+                                      child: TextWidget(
+                                        color: Colors.cyan,
+                                        text: 'Ok',
+                                        textSize: 18,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                          ref.read(loadingProvider.notifier).state = false;
                         },
-                      );
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                      left: 18,
-                      bottom: 10,
-                      right: 18,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 10,
+                            left: 18,
+                            bottom: 10,
+                            right: 18,
+                          ),
+                          child: TextWidget(
+                            text: 'Order Now',
+                            color: Colors.white,
+                            textSize: 18,
+                          ),
+                        ),
+                      ),
                     ),
-                    child: TextWidget(
-                      text: 'Order Now',
-                      color: Colors.white,
-                      textSize: 18,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

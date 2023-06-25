@@ -15,6 +15,7 @@ class UserModel with _$UserModel {
     @Default('') String country,
     @Default('') String zipcode,
     @Default('') String phoneNumber,
+    @Default('') String stripeCustomerId,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

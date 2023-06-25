@@ -49,6 +49,9 @@ class UserNotifier extends StateNotifier<UserModel> {
         phoneNumber: userDoc.data()!.containsKey('phoneNumber')
             ? userDoc.get('phoneNumber') as String
             : state.phoneNumber,
+        stripeCustomerId: userDoc.data()!.containsKey('stripeCustomerId')
+            ? userDoc.get('stripeCustomerId') as String
+            : state.stripeCustomerId,
       );
       state = updatedUser;
       // ignore: avoid_catches_without_on_clauses
@@ -200,6 +203,14 @@ class UserNotifier extends StateNotifier<UserModel> {
       'phoneNumber': phoneNumber,
     });
     final updatedUser = state.copyWith(phoneNumber: phoneNumber);
+    state = updatedUser;
+  }
+
+  Future<void> registerUserStripeCustomerId(String stripeCustomerId) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'stripeCustomerId': stripeCustomerId,
+    });
+    final updatedUser = state.copyWith(stripeCustomerId: stripeCustomerId);
     state = updatedUser;
   }
 

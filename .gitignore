@@ -46,3 +46,5 @@ android/fastlane/README.md
 
 # GitGuardian has detected the following Google API Key exposed within your GitHub account.
 ios/Runner/GoogleService-Info.plist
+
+*.env

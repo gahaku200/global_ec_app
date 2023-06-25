@@ -225,6 +225,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.6.0"
+  cloud_functions:
+    dependency: "direct main"
+    description:
+      name: cloud_functions
+      sha256: c21facf70f1d0fe16a170d2fb04a2bc7a47aa516180dafc31266250c983c028f
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.3"
+  cloud_functions_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_functions_platform_interface
+      sha256: "91b400b212697aa3988c0b89dff79ba95ae7b008433b6ad00308b444c978643e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.3"
+  cloud_functions_web:
+    dependency: transitive
+    description:
+      name: cloud_functions_web
+      sha256: "779538398a658fa002100a7bc291dca3b44e4f16280e23b2ea3bb49612e5deeb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.5.3"
   code_builder:
     dependency: transitive
     description:
@@ -422,6 +446,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      sha256: "9357883bdd153ab78cbf9ffa07656e336b8bbb2b5a3ca596b0b27e119f7c7d77"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.0"
   flutter_flavor:
     dependency: "direct main"
     description:
@@ -486,6 +518,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.2"
+  flutter_stripe:
+    dependency: "direct main"
+    description:
+      name: flutter_stripe
+      sha256: fb1a0647867a26b1fced98706ef96c664a5ae2579e29b67af5ddd054e01d83df
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.2.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -1117,6 +1157,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  stripe_android:
+    dependency: transitive
+    description:
+      name: stripe_android
+      sha256: e5557f2a81cb5070d48edf33168ca3891a22c63f0be98d90edeba54c4328dd21
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.2.1"
+  stripe_ios:
+    dependency: transitive
+    description:
+      name: stripe_ios
+      sha256: e397609a5083b79706814342b40a2a58f1b97ecab2b9d6cae8d8e9f59646fc8c
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.2.1"
+  stripe_platform_interface:
+    dependency: transitive
+    description:
+      name: stripe_platform_interface
+      sha256: "321de409f41088e842140a8e8b334b1111cc6072dfb2fa9e6452155187e8ff2d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.2.2"
   synchronized:
     dependency: transitive
     description:

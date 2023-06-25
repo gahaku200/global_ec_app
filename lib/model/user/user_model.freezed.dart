@@ -28,6 +28,7 @@ mixin _$UserModel {
   String get country => throw _privateConstructorUsedError;
   String get zipcode => throw _privateConstructorUsedError;
   String get phoneNumber => throw _privateConstructorUsedError;
+  String get stripeCustomerId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -48,7 +49,8 @@ abstract class $UserModelCopyWith<$Res> {
       String birthday,
       String country,
       String zipcode,
-      String phoneNumber});
+      String phoneNumber,
+      String stripeCustomerId});
 }
 
 /// @nodoc
@@ -72,6 +74,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? country = null,
     Object? zipcode = null,
     Object? phoneNumber = null,
+    Object? stripeCustomerId = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -106,6 +109,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String,
+      stripeCustomerId: null == stripeCustomerId
+          ? _value.stripeCustomerId
+          : stripeCustomerId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -125,7 +132,8 @@ abstract class _$$_UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
       String birthday,
       String country,
       String zipcode,
-      String phoneNumber});
+      String phoneNumber,
+      String stripeCustomerId});
 }
 
 /// @nodoc
@@ -147,6 +155,7 @@ class __$$_UserModelCopyWithImpl<$Res>
     Object? country = null,
     Object? zipcode = null,
     Object? phoneNumber = null,
+    Object? stripeCustomerId = null,
   }) {
     return _then(_$_UserModel(
       name: null == name
@@ -181,6 +190,10 @@ class __$$_UserModelCopyWithImpl<$Res>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String,
+      stripeCustomerId: null == stripeCustomerId
+          ? _value.stripeCustomerId
+          : stripeCustomerId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -196,7 +209,8 @@ class _$_UserModel implements _UserModel {
       this.birthday = '',
       this.country = '',
       this.zipcode = '',
-      this.phoneNumber = ''});
+      this.phoneNumber = '',
+      this.stripeCustomerId = ''});
 
   factory _$_UserModel.fromJson(Map<String, dynamic> json) =>
       _$$_UserModelFromJson(json);
@@ -222,10 +236,13 @@ class _$_UserModel implements _UserModel {
   @override
   @JsonKey()
   final String phoneNumber;
+  @override
+  @JsonKey()
+  final String stripeCustomerId;
 
   @override
   String toString() {
-    return 'UserModel(name: $name, email: $email, address: $address, sex: $sex, birthday: $birthday, country: $country, zipcode: $zipcode, phoneNumber: $phoneNumber)';
+    return 'UserModel(name: $name, email: $email, address: $address, sex: $sex, birthday: $birthday, country: $country, zipcode: $zipcode, phoneNumber: $phoneNumber, stripeCustomerId: $stripeCustomerId)';
   }
 
   @override
@@ -242,13 +259,15 @@ class _$_UserModel implements _UserModel {
             (identical(other.country, country) || other.country == country) &&
             (identical(other.zipcode, zipcode) || other.zipcode == zipcode) &&
             (identical(other.phoneNumber, phoneNumber) ||
-                other.phoneNumber == phoneNumber));
+                other.phoneNumber == phoneNumber) &&
+            (identical(other.stripeCustomerId, stripeCustomerId) ||
+                other.stripeCustomerId == stripeCustomerId));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, name, email, address, sex,
-      birthday, country, zipcode, phoneNumber);
+      birthday, country, zipcode, phoneNumber, stripeCustomerId);
 
   @JsonKey(ignore: true)
   @override
@@ -273,7 +292,8 @@ abstract class _UserModel implements UserModel {
       final String birthday,
       final String country,
       final String zipcode,
-      final String phoneNumber}) = _$_UserModel;
+      final String phoneNumber,
+      final String stripeCustomerId}) = _$_UserModel;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$_UserModel.fromJson;
@@ -294,6 +314,8 @@ abstract class _UserModel implements UserModel {
   String get zipcode;
   @override
   String get phoneNumber;
+  @override
+  String get stripeCustomerId;
   @override
   @JsonKey(ignore: true)
   _$$_UserModelCopyWith<_$_UserModel> get copyWith =>

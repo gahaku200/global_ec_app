@@ -15,6 +15,7 @@ _$_UserModel _$$_UserModelFromJson(Map<String, dynamic> json) => _$_UserModel(
       country: json['country'] as String? ?? '',
       zipcode: json['zipcode'] as String? ?? '',
       phoneNumber: json['phoneNumber'] as String? ?? '',
+      stripeCustomerId: json['stripeCustomerId'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
@@ -27,4 +28,5 @@ Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
       'country': instance.country,
       'zipcode': instance.zipcode,
       'phoneNumber': instance.phoneNumber,
+      'stripeCustomerId': instance.stripeCustomerId,
     };
