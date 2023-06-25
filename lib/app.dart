@@ -27,7 +27,6 @@ import 'view_model/dark_theme_provider.dart';
 class App extends HookConsumerWidget {
   App({super.key});
 
-  /// The route configuration.
   final GoRouter _router = GoRouter(
     routes: <RouteBase>[
       GoRoute(
@@ -147,7 +146,7 @@ class App extends HookConsumerWidget {
           const MaterialApp(
             home: Scaffold(
               body: Center(
-                child: Text('An error occured'),
+                child: Text('An Error occured'),
               ),
             ),
           );
