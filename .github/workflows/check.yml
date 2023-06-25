@@ -41,6 +41,10 @@ jobs:
       - name: Install matcher
         run: echo "::add-matcher::.github/analyzer-problem-matcher.json"
 
+      - name: Generate .env file
+        run: |
+          cp .env.example .env
+
       - name: Run flutter analyze
         shell: bash
         run: |
