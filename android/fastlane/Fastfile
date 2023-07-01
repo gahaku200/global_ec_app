@@ -82,7 +82,7 @@ platform :android do
       skip_upload_images: true,
       skip_upload_apk: true,
       track: 'internal',
-      aab: '../build/app/outputs/bundle/devRelease/app-dev-release.aab'
+      aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab'
     )
   end
 
