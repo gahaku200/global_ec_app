@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "japanese-market-dev"
-  }
+    "default": "japanese-market-dev",
+    "production": "japanese-market"
+  },
+  "targets": {},
+  "etags": {}
 }

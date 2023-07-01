@@ -49,15 +49,13 @@ jobs:
 
       - name: Generate .env file
         env:
-          STRIPE_PUBLIC_KEY_DEV: ${{ vars.STRIPE_PUBLIC_KEY_DEV }}
           STRIPE_PUBLIC_KEY_PRO: ${{ vars.STRIPE_PUBLIC_KEY_PRO }}
         run: |
-          echo "STRIPE_PUBLIC_KEY_DEV=$STRIPE_PUBLIC_KEY_DEV\n" > .env
           echo "STRIPE_PUBLIC_KEY_PRO=$STRIPE_PUBLIC_KEY_PRO\n" > .env
 
       - name: Build app bundle
         id: build
-        run: flutter build appbundle --flavor dev --dart-define=FLAVOR=dev -t lib/main_dev.dart
+        run: flutter build appbundle --flavor prod --dart-define=FLAVOR=prod -t lib/main.dart
 
       - name: Get Package name
         run: |
