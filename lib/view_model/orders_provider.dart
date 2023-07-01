@@ -183,20 +183,13 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
           'orderDate': Timestamp.now(),
         });
         // 在庫を減らす
-        final productSnapshot = await FirebaseFirestore.instance
+        final productRef = FirebaseFirestore.instance
             .collection('products')
-            .where('id', isEqualTo: getCurrProduct.id)
-            .get();
-        final stock = productSnapshot.docs[0]['stock'] as int;
-        await FirebaseFirestore.instance
-            .collection('products')
-            .doc(getCurrProduct.id)
-            .set(
-          {
-            'stock': stock - value.quantity,
-          },
-          SetOptions(merge: true),
-        );
+            .doc(getCurrProduct.id);
+
+        await productRef.update({
+          'stock': FieldValue.increment(-value.quantity),
+        });
         // ignore: avoid_catches_without_on_clauses
       } catch (error) {
         await GlobalMethods.errorDialog(

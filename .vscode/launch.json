@@ -29,7 +29,7 @@
             "name": "debug-prod",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main_prod.dart",
+            "program": "lib/main.dart",
             "args": [
                 "--debug",
                 "--flavor",
