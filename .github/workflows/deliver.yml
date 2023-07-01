@@ -53,9 +53,9 @@ jobs:
         run: |
           echo "STRIPE_PUBLIC_KEY_PRO=$STRIPE_PUBLIC_KEY_PRO\n" > .env
 
-      - name: Build app bundle
-        id: build
-        run: flutter build appbundle --flavor prod --dart-define=FLAVOR=prod -t lib/main.dart
+#       - name: Build app bundle
+#         id: build
+#         run: flutter build appbundle --flavor prod --dart-define=FLAVOR=prod -t lib/main.dart
 
       - name: Get Package name
         run: |
