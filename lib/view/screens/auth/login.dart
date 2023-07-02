@@ -13,6 +13,7 @@ import '../../../consts/consts.dart';
 import '../../../view_model/user_provider.dart';
 import '../../fetch_screen.dart';
 import '../../widgets/auth_button.dart';
+import '../../widgets/google_button.dart';
 import '../../widgets/text_widget.dart';
 import '../loading_manager.dart';
 
@@ -215,10 +216,10 @@ class LoginScreen extends HookConsumerWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    // const GoogleButton(),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
+                    const GoogleButton(),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       children: [
                         const Expanded(
