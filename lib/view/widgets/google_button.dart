@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_collection_literal, avoid_catches_without_on_clauses
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -16,13 +18,19 @@ import 'text_widget.dart';
 
 class GoogleButton extends HookConsumerWidget {
   const GoogleButton({super.key});
+  static final googleLogin = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 
   Future<void> _googleSignIn(
     BuildContext context,
     WidgetRef ref,
   ) async {
     try {
-      final googleAccount = await GoogleSignIn().signIn();
+      final googleAccount = await googleLogin.signIn();
       if (googleAccount != null) {
         final googleAuth = await googleAccount.authentication;
         if (googleAuth.accessToken != null && googleAuth.idToken != null) {
@@ -42,9 +50,7 @@ class GoogleButton extends HookConsumerWidget {
                 'name': authResult.user!.displayName,
                 'email': authResult.user!.email,
                 'shipping-address': '',
-                // ignore: inference_failure_on_collection_literal
                 'userWish': [],
-                // ignore: inference_failure_on_collection_literal
                 'userCart': [],
                 'createdAt': Timestamp.now(),
               });
@@ -56,7 +62,6 @@ class GoogleButton extends HookConsumerWidget {
               subtitle: '${error.message}',
               context: context,
             );
-            // ignore: avoid_catches_without_on_clauses
           } catch (error) {
             await GlobalMethods.errorDialog(
               subtitle: '$error',
@@ -65,7 +70,6 @@ class GoogleButton extends HookConsumerWidget {
           } finally {}
         }
       }
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       await GlobalMethods.errorDialog(
         subtitle: '$e',

@@ -83,14 +83,16 @@ class UserScreen extends HookConsumerWidget {
                 const Divider(
                   thickness: 2,
                 ),
-                _listTile(
-                  title: 'Orders',
-                  icon: IconlyLight.bag,
-                  onPressed: () {
-                    context.go('/OrderScreen');
-                  },
-                  color: color,
-                ),
+                user.name != ''
+                    ? _listTile(
+                        title: 'Orders',
+                        icon: IconlyLight.bag,
+                        onPressed: () {
+                          context.go('/OrderScreen');
+                        },
+                        color: color,
+                      )
+                    : Container(),
                 _listTile(
                   title: 'Viewed',
                   icon: IconlyLight.show,
@@ -99,14 +101,16 @@ class UserScreen extends HookConsumerWidget {
                   },
                   color: color,
                 ),
-                _listTile(
-                  title: 'Wishlist',
-                  icon: IconlyLight.heart,
-                  onPressed: () {
-                    context.go('/WishlistScreen');
-                  },
-                  color: color,
-                ),
+                user.name != ''
+                    ? _listTile(
+                        title: 'Wishlist',
+                        icon: IconlyLight.heart,
+                        onPressed: () {
+                          context.go('/WishlistScreen');
+                        },
+                        color: color,
+                      )
+                    : Container(),
                 user.name != ''
                     ? _listTile(
                         title: 'User info',

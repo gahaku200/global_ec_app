@@ -28,8 +28,10 @@ class UserNotifier extends StateNotifier<UserModel> {
       return;
     }
     try {
-      final userDoc =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
       final updatedUser = state.copyWith(
         name: userDoc.get('name') as String,
         email: userDoc.get('email') as String,
