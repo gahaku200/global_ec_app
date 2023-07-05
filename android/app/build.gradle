@@ -53,7 +53,7 @@ android {
         prod {
             dimension "flavor-type"
             applicationId "com.global_ec_app"
-            resValue "string", "app_name", "Japanese Market"
+            resValue "string", "app_name", "Sugoi!"
         }
     }
 

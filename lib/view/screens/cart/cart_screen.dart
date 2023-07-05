@@ -101,6 +101,7 @@ class CartScreen extends HookConsumerWidget {
   }) {
     final size = utils.getScreenSize;
     final carts = ref.watch(cartProvider);
+    final user = ref.watch(userProvider);
     final productsNotifier = ref.read(productsProvider.notifier);
     final cartNotifier = ref.read(cartProvider.notifier);
     final ordersNotifier = ref.read(ordersProvider.notifier);
@@ -167,8 +168,17 @@ class CartScreen extends HookConsumerWidget {
                                 ctx,
                               );
                               if (paymentResult == 'success') {
+                                // firebaseに注文内容を登録し、在庫を調整する
                                 await ordersNotifier.saveOrderedProducts(
                                   carts,
+                                  ref,
+                                  total,
+                                  ctx,
+                                );
+                                // ユーザーに注文内容のメールを送る
+                                await ordersNotifier.sendOrderInfo(
+                                  carts,
+                                  user.email,
                                   ref,
                                   total,
                                   ctx,
