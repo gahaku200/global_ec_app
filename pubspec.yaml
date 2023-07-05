@@ -65,6 +65,8 @@ dependencies:
   flutter_stripe: ^9.2.2
   flutter_dotenv: ^5.1.0
   cloud_functions: ^4.3.3
+  flutter_native_splash: ^2.3.1
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -128,39 +130,58 @@ flavorizr:
   flavors:
     dev:
       app:
-        name: "Japanese Market(dev)"
+        name: 'Japanese Market(dev)'
 
       android:
-        applicationId: "com.soso.japaneseMarket.dev"
+        applicationId: 'com.soso.japaneseMarket.dev'
         firebase:
-          config: "./android/app/google-services/development/google-services.json"
+          config: './android/app/google-services/development/google-services.json'
       ios:
-        bundleId: "com.soso.japaneseMarket.dev"
+        bundleId: 'com.soso.japaneseMarket.dev'
         firebase:
-          config: "./ios/Runner/GoogleServicer-info/development/GoogleService-Info.plist"
+          config: './ios/Runner/GoogleServicer-info/development/GoogleService-Info.plist'
 
     stg:
       app:
-        name: "Japanese Market(stg)"
+        name: 'Japanese Market(stg)'
 
       android:
-        applicationId: "com.soso.japaneseMarket.stg"
+        applicationId: 'com.soso.japaneseMarket.stg'
         firebase:
-          config: "./android/app/google-services/staging/google-services.json"
+          config: './android/app/google-services/staging/google-services.json'
       ios:
-        bundleId: "com.soso.japaneseMarket.stg"
+        bundleId: 'com.soso.japaneseMarket.stg'
         firebase:
-          config: "./ios/Runner/GoogleServicer-info/staging/GoogleService-Info.plist"
+          config: './ios/Runner/GoogleServicer-info/staging/GoogleService-Info.plist'
 
     prod:
       app:
-        name: "Japanese Market"
+        name: 'Japanese Market'
 
       android:
-        applicationId: "com.global_ec_app"
+        applicationId: 'com.global_ec_app'
         firebase:
-          config: "./android/app/google-services/production/google-services.json"
+          config: './android/app/google-services/production/google-services.json'
       ios:
-        bundleId: "com.soso.japaneseMarket"
+        bundleId: 'com.soso.japaneseMarket'
         firebase:
-          config: "./ios/Runner/GoogleServicer-info/production/GoogleService-Info.plist"
+          config: './ios/Runner/GoogleServicer-info/production/GoogleService-Info.plist'
+
+flutter_native_splash:
+  color: 'ffffff'
+  image: 'assets/images/SUGOI_logo_splash.png'
+  color_dark: '#262626'
+  image_dark: 'assets/images/SUGOI_logo_splash.png'
+  fullscreen: true
+  android_12:
+    icon_background_color: 'ffffff'
+    image: 'assets/images/SUGOI_logo.png'
+    icon_background_color_dark: '#262626'
+    image_dark: 'assets/images/SUGOI_logo.png'
+    fullscreen: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path_ios: 'assets/images/SUGOI_logo.png'
+  image_path_android: 'assets/images/SUGOI_logo.png'

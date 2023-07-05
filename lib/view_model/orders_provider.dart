@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_dynamic_calls
+// ignore_for_file: avoid_dynamic_calls, avoid_catches_without_on_clauses
 
 // Dart imports:
 import 'dart:developer';
@@ -140,7 +140,6 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
         'A FirebaseFunctions Error occured',
       );
       return 'failed';
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       log('An unknown error has occurred', error: e);
       await GlobalMethods.showToast(
@@ -190,7 +189,6 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
         await productRef.update({
           'stock': FieldValue.increment(-value.quantity),
         });
-        // ignore: avoid_catches_without_on_clauses
       } catch (error) {
         await GlobalMethods.errorDialog(
           subtitle: error.toString(),
@@ -198,6 +196,43 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
         );
       } finally {}
     });
+  }
+
+  Future<void> sendOrderInfo(
+    Map<String, CartModel> carts,
+    String userEmail,
+    WidgetRef ref,
+    double total,
+    BuildContext ctx,
+  ) async {
+    var emailText = '';
+    carts.forEach((key, cart) async {
+      final getCurrProduct = ref.read(productsProvider.notifier).findProdById(
+            cart.productId,
+          );
+      final price = (getCurrProduct.isOnSale
+              ? getCurrProduct.salePrice
+              : getCurrProduct.price) *
+          cart.quantity;
+      emailText +=
+          '${getCurrProduct.title} x${cart.quantity}  \$${price.toStringAsFixed(2)}<br>';
+    });
+    try {
+      await FirebaseFirestore.instance.collection('emails').add({
+        'to': userEmail,
+        'message': {
+          'subject': 'Your order completed',
+          'html': 'Thank you for your order! Your order is listed below.'
+              '<br><br>$emailText<br>'
+              'Total: \$${total.toStringAsFixed(2)}'
+        }
+      });
+    } catch (error) {
+      await GlobalMethods.errorDialog(
+        subtitle: error.toString(),
+        context: ctx,
+      );
+    }
   }
 }
 

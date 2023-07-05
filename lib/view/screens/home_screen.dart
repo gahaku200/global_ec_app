@@ -52,16 +52,15 @@ class HomeScreen extends HookConsumerWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 25, bottom: 8),
-              child: Text(
-                'Sugoi！Collection',
-                maxLines: 10,
-                style: TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                  color: color,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              padding: const EdgeInsets.only(
+                top: 35,
+                bottom: 15,
+                left: 30,
+                right: 30,
+              ),
+              child: Image.asset(
+                'assets/images/SUGOI_logo_header.png',
+                fit: BoxFit.fill,
               ),
             ),
             SizedBox(
@@ -107,7 +106,7 @@ class HomeScreen extends HookConsumerWidget {
               ),
             ),
             SizedBox(
-              height: size.height * 0.25,
+              height: size.height * 0.3,
               child: ListView.builder(
                 itemCount:
                     productsOnSale.length < 10 ? productsOnSale.length : 10,
