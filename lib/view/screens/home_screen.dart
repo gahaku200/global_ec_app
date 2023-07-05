@@ -48,21 +48,20 @@ class HomeScreen extends HookConsumerWidget {
     );
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Image.asset(
+            'assets/images/SUGOI_logo_header.png',
+            fit: BoxFit.fill,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 35,
-                bottom: 15,
-                left: 30,
-                right: 30,
-              ),
-              child: Image.asset(
-                'assets/images/SUGOI_logo_header.png',
-                fit: BoxFit.fill,
-              ),
-            ),
             SizedBox(
               height: size.height * 0.30,
               child: Stack(
