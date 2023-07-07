@@ -13,8 +13,8 @@ on:
           - major
 
 env:
-  GIT_USER_EMAIL: 'coldfield1984@gmail.com'
-  GIT_USER_NAME: 'gahaku200'
+  GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+  GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
 
 permissions:
   contents: write
@@ -31,7 +31,7 @@ jobs:
       - name: install flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
           cache: true
 
       - name: run flutter version
