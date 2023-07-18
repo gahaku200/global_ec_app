@@ -22,6 +22,18 @@ class UserNotifier extends StateNotifier<UserModel> {
           ),
         );
 
+  Future<void> setName(String name) async {
+    state = state.copyWith(name: name);
+  }
+
+  // void setEmail(String email) {
+  //   state = state.copyWith(email: email);
+  // }
+
+  // void setAddress(String address) {
+  //   state = state.copyWith(address: address);
+  // }
+
   Future<void> getUserData(BuildContext context) async {
     final user = authInstance.currentUser;
     if (user == null) {

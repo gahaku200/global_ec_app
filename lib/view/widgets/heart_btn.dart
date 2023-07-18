@@ -42,6 +42,7 @@ class HeartBTN extends HookConsumerWidget {
             return;
           }
 
+          // ignore: no_literal_bool_comparisons
           if (isInWishlist == false) {
             await GlobalMethods.addToWishlist(
               productId: productId,
