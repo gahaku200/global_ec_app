@@ -53,6 +53,35 @@ jobs:
         run: |
           echo "STRIPE_PUBLIC_KEY_PRO=$STRIPE_PUBLIC_KEY_PRO\n" > .env
 
+      - name: Set KEYS_PROPERTIES
+        env:
+          KEYS_PROPERTIES: ${{ secrets.KEYS_PROPERTIES }}
+        run: |
+          echo 'storeFile=key.jks' > android/key.properties
+          echo 'storePassword=${{ secrets.STORE_PASSWORD }}' >> android/key.properties
+          echo 'keyPassword=${{ secrets.KEY_PASSWORD }}' >> android/key.properties
+          echo 'keyAlias=${{ secrets.KEY_ALIAS }}' >> android/key.properties
+
+      - name: Set PC_API_JSON
+        env:
+          PC_API_JSON: ${{ secrets.PC_API_JSON }}
+        run: |
+          echo $PC_API_JSON > android/pc-api.json
+
+      - name: Set KEY_JKS
+        run: echo ${{ secrets.KEY_JKS }} | base64 --decode > android/app/key.jks
+        
+      - name: Set GOOGLE_SERVICES_JSON
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          GOOGLE_SERVICES_STG_JSON: ${{ secrets.GOOGLE_SERVICES_STG_JSON }}
+          GOOGLE_SERVICES_DEV_JSON: ${{ secrets.GOOGLE_SERVICES_DEV_JSON }}
+        run: |
+          echo $GOOGLE_SERVICES_JSON > android/app/google-services.json
+          echo $GOOGLE_SERVICES_JSON > android/app/src/prod/google-services.json
+          echo $GOOGLE_SERVICES_STG_JSON > android/app/src/stg/google-services.json
+          echo $GOOGLE_SERVICES_DEV_JSON > android/app/src/dev/google-services.json
+
       - name: Build app bundle
         id: build
         run: flutter build appbundle --flavor prod --dart-define=FLAVOR=prod -t lib/main.dart
