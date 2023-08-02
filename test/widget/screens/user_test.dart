@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:global_ec_app/consts/theme_data.dart';
-import 'package:global_ec_app/view/screens/user.dart';
+import 'package:global_ec_app/view/screens/user/user.dart';
 import 'package:global_ec_app/view_model/dark_theme_provider.dart';
 import 'package:global_ec_app/view_model/user_provider.dart';
 

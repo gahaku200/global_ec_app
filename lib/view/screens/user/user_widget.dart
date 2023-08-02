@@ -3,47 +3,36 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import '../../consts/firebase_consts.dart';
-import '../../services/global_method.dart';
-import '../../services/utils.dart';
-import '../../view_model/dark_theme_provider.dart';
-import '../../view_model/user_provider.dart';
-import '../widgets/text_widget.dart';
-import 'loading_manager.dart';
+import '../../../consts/firebase_consts.dart';
+import '../../../services/global_method.dart';
+import '../../../view_model/dark_theme_provider.dart';
+import '../../../view_model/user_provider.dart';
+import '../../widgets/text_widget.dart';
+import '../loading_manager.dart';
 
-class UserScreen extends HookConsumerWidget {
-  UserScreen({super.key});
+class UserWidget extends HookConsumerWidget {
+  const UserWidget({
+    super.key,
+    required this.isLoading,
+    required this.userName,
+    required this.color,
+    required this.isDark,
+  });
 
-  final isLoadingProvider = StateProvider((ref) => false);
+  final bool isLoading;
+  final String userName;
+  final Color color;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final utils = Utils(context);
-    final color = ref.watch(utils.getTheme);
-    final isDark = ref.watch(themeState);
-    final isLoading = ref.watch(isLoadingProvider);
-    final isLoadingNotifier = ref.read(isLoadingProvider.notifier);
     final themeStateNotifier = ref.read(themeState.notifier);
-    final user = ref.watch(userProvider);
     final userNotifier = ref.read(userProvider.notifier);
-
-    useEffect(
-      () {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          isLoadingNotifier.state = true;
-          await userNotifier.getUserData(context);
-          isLoadingNotifier.state = false;
-        });
-        return;
-      },
-      [],
-    );
 
     return Scaffold(
       body: LoadingManager(
@@ -65,15 +54,16 @@ class UserScreen extends HookConsumerWidget {
                       color: Colors.cyan,
                       fontSize: 27,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'Murecho',
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                        text:
-                            user.name == '' ? 'Guest not logged in' : user.name,
+                        text: userName == '' ? 'Guest not logged in' : userName,
                         style: TextStyle(
                           color: color,
                           fontSize: 23,
                           fontWeight: FontWeight.normal,
+                          fontFamily: 'Murecho',
                         ),
                         recognizer: TapGestureRecognizer()..onTap = () {},
                       ),
@@ -83,7 +73,7 @@ class UserScreen extends HookConsumerWidget {
                 const Divider(
                   thickness: 2,
                 ),
-                user.name != ''
+                userName != ''
                     ? _listTile(
                         title: 'Orders',
                         icon: IconlyLight.bag,
@@ -101,7 +91,7 @@ class UserScreen extends HookConsumerWidget {
                   },
                   color: color,
                 ),
-                user.name != ''
+                userName != ''
                     ? _listTile(
                         title: 'Wishlist',
                         icon: IconlyLight.heart,
@@ -111,7 +101,7 @@ class UserScreen extends HookConsumerWidget {
                         color: color,
                       )
                     : Container(),
-                user.name != ''
+                userName != ''
                     ? _listTile(
                         title: 'User info',
                         icon: IconlyLight.profile,
@@ -121,7 +111,7 @@ class UserScreen extends HookConsumerWidget {
                         color: color,
                       )
                     : Container(),
-                user.name != ''
+                userName != ''
                     ? _listTile(
                         title: 'Forget password',
                         icon: IconlyLight.unlock,
@@ -149,11 +139,10 @@ class UserScreen extends HookConsumerWidget {
                   height: 10,
                 ),
                 _listTile(
-                  title: user.name == '' ? 'Login' : 'Logout',
-                  icon:
-                      user.name == '' ? IconlyLight.login : IconlyLight.logout,
+                  title: userName == '' ? 'Login' : 'Logout',
+                  icon: userName == '' ? IconlyLight.login : IconlyLight.logout,
                   onPressed: () {
-                    if (user.name == '') {
+                    if (userName == '') {
                       context.go('/LoginScreen');
                       return;
                     }

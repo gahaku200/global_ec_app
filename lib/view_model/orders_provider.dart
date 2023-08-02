@@ -113,7 +113,6 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
             ctx,
             'The order was canceled',
           );
-          break;
         case FailureCode.Failed:
           log('A Stripe Error occured', error: e);
           await GlobalMethods.showToast(
@@ -121,7 +120,6 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
             ctx,
             'A Stripe Error occured',
           );
-          break;
         case FailureCode.Timeout:
           log('Request timed out', error: e);
           await GlobalMethods.showToast(
@@ -129,7 +127,6 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
             ctx,
             'Request timed out',
           );
-          break;
       }
       return 'failed';
     } on FirebaseFunctionsException catch (e) {
