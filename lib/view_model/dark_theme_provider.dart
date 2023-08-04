@@ -10,6 +10,14 @@ class DarkThemeProvider extends StateNotifier<bool> {
       : super(defaultValue);
   DarkThemePrefs darkThemePrefs = DarkThemePrefs();
 
+  // Getter
+  bool get isDarkTheme => state;
+
+  // Setter
+  set isDarkTheme(bool value) {
+    state = value;
+  }
+
   // ignore: avoid_positional_boolean_parameters
   void setDarkTheme(bool value) {
     state = value;

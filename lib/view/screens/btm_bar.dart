@@ -14,7 +14,7 @@ import '../widgets/text_widget.dart';
 import 'cart/cart_screen.dart';
 import 'categories.dart';
 import 'home_screen.dart';
-import 'user.dart';
+import 'user/user.dart';
 
 class BottomBarScreen extends HookConsumerWidget {
   BottomBarScreen({super.key});
