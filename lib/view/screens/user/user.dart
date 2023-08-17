@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import '../../../consts/firebase_consts.dart';
 import '../../../services/utils.dart';
 import '../../../view_model/dark_theme_provider.dart';
 import '../../../view_model/user_provider.dart';
@@ -30,7 +31,10 @@ class UserScreen extends HookConsumerWidget {
       () {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           isLoadingNotifier.state = true;
-          await userNotifier.getUserData(context);
+          await userNotifier.getUserData(
+            context,
+            authInstance.currentUser,
+          );
           isLoadingNotifier.state = false;
         });
         return;

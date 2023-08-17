@@ -54,7 +54,10 @@ class FetchScreen extends HookConsumerWidget {
               await cartNotifier.fetchCart();
               await wishlistNotifier.fetchWishlist();
               await ordersNotifier.fetchOrders();
-              await userNotifier.getUserData(context);
+              await userNotifier.getUserData(
+                context,
+                authInstance.currentUser,
+              );
             }
             await categoryNotifier.fetchCategory();
             if (isFirst) {
