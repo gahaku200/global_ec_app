@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -26,6 +28,11 @@ void main() async {
   );
   F.appFlavor = Flavor.PROD;
   WidgetsFlutterBinding.ensureInitialized();
+  // DIの設定
+  GetIt.I.registerLazySingleton<FirebaseFirestore>(() {
+    return FirebaseFirestore.instance;
+  });
+  // Stripeの公開鍵
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLIC_KEY_PRO']!;
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then(

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -22,28 +24,23 @@ class UserNotifier extends StateNotifier<UserModel> {
           ),
         );
 
+  UserModel getData() {
+    return state;
+  }
+
   Future<void> setName(String name) async {
     state = state.copyWith(name: name);
   }
 
-  // void setEmail(String email) {
-  //   state = state.copyWith(email: email);
-  // }
-
-  // void setAddress(String address) {
-  //   state = state.copyWith(address: address);
-  // }
-
-  Future<void> getUserData(BuildContext context) async {
-    final user = authInstance.currentUser;
+  Future<void> getUserData(BuildContext context, User? user) async {
     if (user == null) {
       return;
     }
+    // DIで設定したインスタンスを使用する
+    final firebaseFirestore = GetIt.I<FirebaseFirestore>();
     try {
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+      final userDoc =
+          await firebaseFirestore.collection('users').doc(user.uid).get();
       final updatedUser = state.copyWith(
         name: userDoc.get('name') as String,
         email: userDoc.get('email') as String,
