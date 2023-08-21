@@ -222,7 +222,7 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
             'subject': 'Your order completed',
             'html': 'Thank you for your order! Your order is listed below.'
                 '<br><br>$emailText<br>'
-                'Total: \$${total.toStringAsFixed(2)}'
+                'Total: \$${total.toStringAsFixed(2)}',
           },
         },
       );
