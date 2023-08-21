@@ -85,7 +85,7 @@ class FetchScreen extends HookConsumerWidget {
               child: SpinKitFadingFour(
                 color: Colors.white,
               ),
-            )
+            ),
           ],
         ),
       );
