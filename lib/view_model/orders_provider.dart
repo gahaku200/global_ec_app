@@ -215,15 +215,17 @@ class OrdersNotifier extends StateNotifier<List<OrderModel>> {
           '${getCurrProduct.title} x${cart.quantity}  \$${price.toStringAsFixed(2)}<br>';
     });
     try {
-      await FirebaseFirestore.instance.collection('emails').add({
-        'to': userEmail,
-        'message': {
-          'subject': 'Your order completed',
-          'html': 'Thank you for your order! Your order is listed below.'
-              '<br><br>$emailText<br>'
-              'Total: \$${total.toStringAsFixed(2)}'
-        }
-      });
+      await FirebaseFirestore.instance.collection('emails').add(
+        {
+          'to': userEmail,
+          'message': {
+            'subject': 'Your order completed',
+            'html': 'Thank you for your order! Your order is listed below.'
+                '<br><br>$emailText<br>'
+                'Total: \$${total.toStringAsFixed(2)}',
+          },
+        },
+      );
     } catch (error) {
       await GlobalMethods.errorDialog(
         subtitle: error.toString(),

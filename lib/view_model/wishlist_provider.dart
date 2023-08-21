@@ -39,14 +39,16 @@ class WishlistNotifier extends StateNotifier<Map<String, WishlistModel>> {
     required String productId,
   }) async {
     final user = authInstance.currentUser;
-    await userCollection.doc(user!.uid).update({
-      'userWish': FieldValue.arrayRemove([
-        {
-          'wishlistId': wishlistId,
-          'productId': productId,
-        }
-      ])
-    });
+    await userCollection.doc(user!.uid).update(
+      {
+        'userWish': FieldValue.arrayRemove([
+          {
+            'wishlistId': wishlistId,
+            'productId': productId,
+          }
+        ]),
+      },
+    );
     state.remove(productId);
   }
 

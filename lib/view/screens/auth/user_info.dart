@@ -376,7 +376,7 @@ class UserInfoScreen extends HookConsumerWidget {
                       fontSize: 16,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -618,7 +618,7 @@ class UserInfoScreen extends HookConsumerWidget {
                                             fontSize: 16,
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -698,7 +698,7 @@ class UserInfoScreen extends HookConsumerWidget {
                 'CA',
                 'GB',
                 'FR',
-                'AU'
+                'AU',
               ],
             ),
           ),
