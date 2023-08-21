@@ -117,7 +117,7 @@ class GlobalMethods {
               'productId': productId,
               'quantity': quantity,
             }
-          ])
+          ]),
         },
       );
       final fToast = FToast();
@@ -143,7 +143,7 @@ class GlobalMethods {
               'wishlistId': wishlistId,
               'productId': productId,
             }
-          ])
+          ]),
         },
       );
       final fToast = FToast();

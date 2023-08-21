@@ -46,7 +46,7 @@ class WishlistNotifier extends StateNotifier<Map<String, WishlistModel>> {
             'wishlistId': wishlistId,
             'productId': productId,
           }
-        ])
+        ]),
       },
     );
     state.remove(productId);
