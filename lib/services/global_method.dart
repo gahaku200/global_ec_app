@@ -109,15 +109,17 @@ class GlobalMethods {
     final uid = user!.uid;
     final cartId = const Uuid().v4();
     try {
-      await FirebaseFirestore.instance.collection('users').doc(uid).update({
-        'userCart': FieldValue.arrayUnion([
-          {
-            'cartId': cartId,
-            'productId': productId,
-            'quantity': quantity,
-          }
-        ])
-      });
+      await FirebaseFirestore.instance.collection('users').doc(uid).update(
+        {
+          'userCart': FieldValue.arrayUnion([
+            {
+              'cartId': cartId,
+              'productId': productId,
+              'quantity': quantity,
+            }
+          ])
+        },
+      );
       final fToast = FToast();
       await showToast(fToast, context, 'Item has been added to your cart');
       // ignore: avoid_catches_without_on_clauses
@@ -134,14 +136,16 @@ class GlobalMethods {
     final uid = user!.uid;
     final wishlistId = const Uuid().v4();
     try {
-      await FirebaseFirestore.instance.collection('users').doc(uid).update({
-        'userWish': FieldValue.arrayUnion([
-          {
-            'wishlistId': wishlistId,
-            'productId': productId,
-          }
-        ])
-      });
+      await FirebaseFirestore.instance.collection('users').doc(uid).update(
+        {
+          'userWish': FieldValue.arrayUnion([
+            {
+              'wishlistId': wishlistId,
+              'productId': productId,
+            }
+          ])
+        },
+      );
       final fToast = FToast();
       await showToast(fToast, context, 'Item has been added to your wishlist');
       // ignore: avoid_catches_without_on_clauses

@@ -199,7 +199,7 @@ class CartWidget extends HookConsumerWidget {
                               maxLines: 1,
                             ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
